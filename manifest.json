@@ -1,0 +1,11 @@
+{
+  "name": "Oracle Manager",
+  "description": "An app to manage oracles addresses.",
+  "icons": [{
+    "src": "images/icon.svg",
+    "sizes": "192x192"
+  }],
+  "screenshots": [],
+  "start_url": "/dist/index.html",
+  "script": "/dist/script.js"
+}
