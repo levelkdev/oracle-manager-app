@@ -62,4 +62,30 @@ contract OracleManagerApp is AragonApp {
       dataFeedAlreadyRecorded[dataFeeds[j]] = false;
     }
   }
+
+  /**
+  * @dev Adds approved dataFeed to be medianized
+  * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
+  */
+  function addOracle(
+    DataFeedOracleBase dataFeed
+    // will probably only be accepted from Voting App in most cases
+  ) onlyPermissionAccount(msg.sender) public {
+    require(!approvedDataFeeds[address(dataFeed)], 'cannot add duplicate oracle');
+    approvedDataFeedsLength++;
+    approvedDataFeeds[address(dataFeed)] = true;
+  }
+
+  /**
+  * @dev Adds approved dataFeed to be medianized
+  * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
+  */
+  function removeOracle(
+    DataFeedOracleBase dataFeed
+    // will probably only be accepted from Voting App in most cases
+  ) onlyPermissionAccount(msg.sender) public {
+    require(approvedDataFeeds[address(dataFeed)], 'cannot remove unapproved oracle');
+    approvedDataFeedsLength--;
+    approvedDataFeeds[address(dataFeed)] = true;
+  }
 }
