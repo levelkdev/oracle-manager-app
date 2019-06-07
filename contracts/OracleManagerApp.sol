@@ -6,12 +6,17 @@ import '@aragon/os/contracts/apps/AragonApp.sol';
 
 contract OracleManagerApp is AragonApp {
 
-  address[] public permissionedAccounts; // addresses permitted to add and remove oracles (will probably replace with Aragon's ACL permissions)
   DataFeedOracle public medianDataFeed;  // tidbit MedianDataFeedOracle to record median data throughout time
   uint public approvedDataFeedsLength;   // number of approvedDataFeeds
+  mapping(address => bool) public permissionedAccounts; // addresses permitted to add and remove oracles (will probably replace with Aragon's ACL permissions)
   mapping(address => bool) public approvedDataFeeds; // dataFeeds approved to be medianized
   mapping(address => bool) dataFeedAlreadyRecorded; // transitory data structure useful only during function call recordDataMedian
 
+
+  modifier onlyPermissionAccount(address account) {
+    require(permissionedAccounts[account]);
+    _;
+  }
 
   /**
   * @dev initializes the OracleManagerApp with initial parameters
@@ -24,13 +29,16 @@ contract OracleManagerApp is AragonApp {
     DataFeedOracleBase[] memory dataFeeds,
     DataFeedOracle _medianDataFeed
   ) onlyInit public {
-    permissionedAccounts = _permissionedAccounts;
     medianDataFeed = _medianDataFeed;
     approvedDataFeedsLength = dataFeeds.length;
 
     for(uint i=0; i < dataFeeds.length; i++) {
       require(approvedDataFeeds[dataFeeds[i]] == false, 'dataFeed cannot be a duplicate');
       approvedDataFeeds[dataFeeds[i]] = true;
+    }
+
+    for(uint j=0; j < _permissionedAccounts.length; j++) {
+      permissionedAccounts[_permissionedAccounts[j]] = true;
     }
   }
 
