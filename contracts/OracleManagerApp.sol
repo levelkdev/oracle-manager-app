@@ -12,7 +12,6 @@ contract OracleManagerApp is AragonApp {
   mapping(address => bool) public approvedDataFeeds; // dataFeeds approved to be medianized
   mapping(address => bool) dataFeedAlreadyRecorded; // transitory data structure useful only during function call recordDataMedian
 
-
   modifier onlyPermissionAccount(address account) {
     require(permissionedAccounts[account]);
     _;
