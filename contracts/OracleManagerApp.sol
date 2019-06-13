@@ -12,7 +12,6 @@ contract OracleManagerApp is AragonApp {
   mapping(address => bool) public approvedDataFeeds; // dataFeeds approved to be medianized
   mapping(address => bool) dataFeedAlreadyRecorded; // transitory data structure useful only during function call recordDataMedian
 
-
   modifier onlyPermissionAccount(address account) {
     require(permissionedAccounts[account]);
     _;
@@ -74,6 +73,7 @@ contract OracleManagerApp is AragonApp {
     require(!approvedDataFeeds[address(dataFeed)], 'cannot add duplicate oracle');
     approvedDataFeedsLength++;
     approvedDataFeeds[address(dataFeed)] = true;
+    medianDataFeed.addDataFeed(dataFeed);
   }
 
   /**
@@ -86,6 +86,7 @@ contract OracleManagerApp is AragonApp {
   ) onlyPermissionAccount(msg.sender) public {
     require(approvedDataFeeds[address(dataFeed)], 'cannot remove unapproved oracle');
     approvedDataFeedsLength--;
-    approvedDataFeeds[address(dataFeed)] = true;
+    approvedDataFeeds[address(dataFeed)] = false;
+    medianDataFeed.removeDataFeed(dataFeed);
   }
 }
