@@ -100,7 +100,7 @@ contract('OracleManagerApp', (accounts) => {
 
     it('reverts if a dataFeed is not approved', async () => {
       return assertRevert(async () => {
-        await oracleManagerApp.recordDataMedian([dataFeed1.address, dataFeed2.address, unapprovedDataFeed.address])
+        await oracleManagerApp.recordDataMedian([dataFeed1.address, unapprovedDataFeed.address])
       })
     })
 
@@ -112,7 +112,7 @@ contract('OracleManagerApp', (accounts) => {
 
     it('reverts if there are duplicated dataFeeds sent', async () => {
       return assertRevert(async () => {
-        await oracleManagerApp.recordDataMedian([dataFeed1.address, dataFeed2.address, dataFeed1.address])
+        await oracleManagerApp.recordDataMedian([dataFeed1.address, dataFeed1.address])
       })
     })
   })
@@ -186,6 +186,7 @@ contract('OracleManagerApp', (accounts) => {
       })
     })
   })
+})
 
 function uintToBytes(num) {
   const hexString = num.toString(16)
