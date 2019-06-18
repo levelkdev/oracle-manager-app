@@ -4,6 +4,7 @@
 
 const getAccounts = require('@aragon/os/scripts/helpers/get-accounts')
 const readAccounts = require('./deployConfig/readAccounts')
+const deployDeps = require('./deploy_deps')
 
 const defaultOwner = process.env.OWNER
 
@@ -22,12 +23,19 @@ module.exports = async (
       owner = (await getAccounts(web3))[0]
     }
 
-    // TODO: prepare here
+    console.log(`owner: ${owner}`)
+    console.log('')
+
+    console.log('')
+
+    await deployDeps(null, { artifacts, network })
+    console.log('')
+    console.log('')
+    console.log('Prepare complete')
+    console.log('')
+
   } catch (err) {
     console.log('Error in scripts/prepare.js: ', err)
     truffleExecCallback()
   }
-
-    console.log(`owner: ${owner}`)
-    console.log('')
 }
