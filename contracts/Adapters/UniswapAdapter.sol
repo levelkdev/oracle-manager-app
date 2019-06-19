@@ -4,6 +4,7 @@ import './IAdapter.sol';
 import './dependencies/UniswapExchangeInterface.sol';
 import './dependencies/UniswapFactoryInterface.sol';
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
+import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
 
 contract UniswapAdapter is IAdapter {
   using SafeMath for uint;
@@ -16,7 +17,13 @@ contract UniswapAdapter is IAdapter {
     uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
   }
 
-  function ping(address token1, address token2) public returns (uint price) {
+  function ping(address token1, address token2) public {
+    uint price = calculateTokenPrice(token1, token2);
+    DataFeedOracleBase dataFeed = DataFeedOracleBase(msg.sender);
+    dataFeed.setResult(bytes32(price), uint256(block.timestamp));
+  }
+
+  function calculateTokenPrice(address token1, address token2) public returns (uint price) {
     UniswapExchangeInterface token1Exchange = UniswapExchangeInterface(uniswapFactory.getExchange(token1));
     UniswapExchangeInterface token2Exchange = UniswapExchangeInterface(uniswapFactory.getExchange(token2));
 
