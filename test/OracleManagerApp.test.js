@@ -10,7 +10,7 @@ const DataFeedOracle = artifacts.require('DataFeedOracle.sol')
 
 // Local Contracts
 const OracleManagerApp = artifacts.require('OracleManagerApp.sol')
-const { increaseTime } = require('./helpers')
+const { increaseTime, bytes32ToNum, uintToBytes32 } = require('./helpers')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
 const unixTime = () => Math.round(new Date().getTime() / 1000)
@@ -88,14 +88,14 @@ contract('OracleManagerApp', (accounts) => {
       unapprovedDataFeed.initialize(root)
 
       await oracleManagerApp.initialize([root], [dataFeed1.address, dataFeed2.address], medianDataFeed.address)
-      await dataFeed1.setResult(uintToBytes(5), unixTime())
-      await dataFeed2.setResult(uintToBytes(7), unixTime())
-      await unapprovedDataFeed.setResult(uintToBytes(9), unixTime())
+      await dataFeed1.setResult(uintToBytes32(5), unixTime())
+      await dataFeed2.setResult(uintToBytes32(7), unixTime())
+      await unapprovedDataFeed.setResult(uintToBytes32(9), unixTime())
     })
 
     it('sets the result to the median of the dataFeeds', async () => {
       await oracleManagerApp.recordDataMedian([dataFeed1.address, dataFeed2.address])
-      expect(bytes32ToNumString((await medianDataFeed.resultByIndexFor(1))[0])).to.equal(6)
+      expect(bytes32ToNum((await medianDataFeed.resultByIndexFor(1))[0])).to.equal(6)
     })
 
     it('reverts if a dataFeed is not approved', async () => {
@@ -187,24 +187,3 @@ contract('OracleManagerApp', (accounts) => {
     })
   })
 })
-
-function uintToBytes(num) {
-  const hexString = num.toString(16)
-  return padToBytes32(hexString)
-}
-
-function padToBytes32(n) {
-    while (n.length < 64) {
-        n = "0" + n;
-    }
-    return "0x" + n;
-}
-
-function bytes32ToNumString(bytes32str) {
-    bytes32str = bytes32str.replace(/^0x/, '');
-    while (bytes32str[0] == 0) {
-      bytes32str = bytes32str.substr(1)
-    }
-    var bn = web3.toDecimal('0x' + bytes32str, 16);
-    return bn
-}
