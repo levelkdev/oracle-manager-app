@@ -7,7 +7,7 @@ contract OracleManagerDataFeed is DataFeedOracleBase {
   address public token1;
   address public token2;
 
-  function intialize(address _token1, address _token2, address dataSource) public {
+  function initialize(address _token1, address _token2, address dataSource) public {
     token1 = _token1;
     token2 = _token2;
     super.initialize(dataSource);

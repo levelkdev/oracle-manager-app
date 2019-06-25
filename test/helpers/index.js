@@ -1,3 +1,5 @@
 module.exports = {
-  increaseTime: require('./increaseTime')
+  bytes32ToNum: require('./bytes32ToNum'),
+  increaseTime: require('./increaseTime'),
+  uintToBytes32: require('./uintToBytes32')
 }

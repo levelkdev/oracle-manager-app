@@ -11,7 +11,7 @@ contract UniswapAdapter is IAdapter {
 
   event PriceCalculated(uint price, address token1, address token2);
 
-  UniswapFactoryInterface uniswapFactory;
+  UniswapFactoryInterface public uniswapFactory;
 
   constructor(address _uniswapFactory) {
     uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
