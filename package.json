@@ -44,7 +44,7 @@
     "adapter": "truffle exec scripts/adapter_scripts/run.js --network rinkeby",
     "deploy": "truffle migrate --network rpc",
     "deploy:rinkeby": "truffle migrate --network rinkeby",
-    "deploy:staging:prepare": "rm -rf build && npm run compile && truffle exec scripts/prepare.js --network rinkeby",
+    "deploy:staging:prepare": "rm -rf build && npm run compile && truffle exec scripts/prepare.js --network",
     "deploy:staging:publish:major": "node scripts/publish.js staging major",
     "deploy:staging:publish:minor": "node scripts/publish.js staging minor",
     "start:aragon": "truffle exec scripts/run.js --network rpc",

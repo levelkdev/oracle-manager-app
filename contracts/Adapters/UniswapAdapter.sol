@@ -13,7 +13,7 @@ contract UniswapAdapter is IAdapter {
 
   UniswapFactoryInterface public uniswapFactory;
 
-  constructor(address _uniswapFactory) {
+  constructor(address _uniswapFactory) public {
     uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
   }
 
