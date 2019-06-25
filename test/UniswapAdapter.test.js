@@ -33,10 +33,13 @@ contract.only('UniswapAdapter', (accounts) => {
       )
     })
 
-    it('updates the DataFeed with the correct price', async () => {
+    it('updates the DataFeed with the correct price and date', async () => {
       const expectedResult = uintToBytes32(await getExpectedPrice(uniswapExchangeMock1, uniswapExchangeMock2))
       await oracleManagerDataFeed.logResult();
-      expect((await oracleManagerDataFeed.resultByIndexFor(1))[0]).to.equal(expectedResult)
+      const returnedResult = await oracleManagerDataFeed.resultByIndexFor(1)
+
+      expect(returnedResult[0]).to.equal(expectedResult)
+      expect(returnedResult[1].toNumber()).to.be.greaterThan(0)
     })
   })
 
