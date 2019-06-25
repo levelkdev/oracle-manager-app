@@ -11,11 +11,16 @@ module.exports = async (
 ) => {
   const UniswapAdapter = artifacts.require('UniswapAdapter')
 
+  const uniswapFactories = {
+    rinkeby: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36',
+    mainnet: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
+  }
+
   try {
     console.log(`Deploying dependencies for "${network}" network`)
     console.log('')
 
-    let uniswapFactoryAddr = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
+    let uniswapFactoryAddr = uniswapFactories[network]
 
     const uniswapAdapter = await tryDeploy(
       UniswapAdapter,
