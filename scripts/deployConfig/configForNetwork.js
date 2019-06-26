@@ -2,8 +2,7 @@ const readDeployConfig = require('./readDeployConfig')
 const isLocalNetwork = require('./isLocalNetwork')
 
 const defaultConf = {
-  dependencyContracts: {},
-  tokensAllocated: {}
+  dependencyContracts: {}
 }
 
 module.exports = function configForEnv (network) {

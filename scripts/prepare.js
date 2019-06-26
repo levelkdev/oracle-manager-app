@@ -3,7 +3,6 @@
  */
 
 const getAccounts = require('@aragon/os/scripts/helpers/get-accounts')
-const readAccounts = require('./deployConfig/readAccounts')
 const deployDeps = require('./deploy_deps')
 
 const defaultOwner = process.env.OWNER
@@ -17,9 +16,7 @@ module.exports = async (
   const network = process.argv[5]
 
   try {
-    let accounts
     if (!owner) {
-      accounts = readAccounts(network)
       owner = (await getAccounts(web3))[0]
     }
 

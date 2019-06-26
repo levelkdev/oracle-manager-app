@@ -81,11 +81,11 @@ We're using react [styled-components](https://www.styled-components.com/docs/bas
 
 Before publishing, make sure a local IPFS instance is running: `npm run ipfs`
 
-### `npm run deploy:staging:prepare`:
+### `npm run deploy:prepare <network>`:
 
-Deploys these dependency contracts to staging (rinkeby). Allocates balances for the `MiniMeToken` to the accounts in `accounts.rinkeby.json`.
+Deploys dependency contracts to the network specified. Currently only Rinkeby and Mainnet have UniswapFactory contracts which is needed by dependencies.
 
-Deployed contract addresses and token allocation amounts will be stored in `deploy.rinkeby.json`.
+Deployed contract addresses will be stored in `deploy.<network>.json`.
 
 ### `npm run deploy:staging:publish:major`:
 
