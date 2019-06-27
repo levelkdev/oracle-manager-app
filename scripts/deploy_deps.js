@@ -1,4 +1,5 @@
 const tryDeployToNetwork = require('./utilities/tryDeployToNetwork')
+const configForNetwork = require('./deployConfig/configForNetwork')
 
 const globalArtifacts = this.artifacts // Not injected unless called directly via truffle
 
@@ -10,17 +11,14 @@ module.exports = async (
   } = {}
 ) => {
   const UniswapAdapter = artifacts.require('UniswapAdapter')
-
-  const uniswapFactories = {
-    rinkeby: '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36',
-    mainnet: '0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95'
-  }
+  const OracleManagerDataFeed = artifacts.require('OracleManagerDataFeed')
+  const deployConfig = configForNetwork(network)
 
   try {
     console.log(`Deploying dependencies for "${network}" network`)
     console.log('')
 
-    let uniswapFactoryAddr = uniswapFactories[network]
+    const uniswapFactoryAddr = deployConfig.dependencyContracts.UniswapFactory
 
     const uniswapAdapter = await tryDeploy(
       UniswapAdapter,

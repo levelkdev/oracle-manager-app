@@ -1,5 +1,6 @@
 {
     "dependencyContracts": {
-        "UniswapAdapter": "0xde64ba88a87f676b057ac704793adbc76768e2f3"
+        "UniswapAdapter": "0xde64ba88a87f676b057ac704793adbc76768e2f3",
+        "UniswapFactory": "0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36"
     }
 }
