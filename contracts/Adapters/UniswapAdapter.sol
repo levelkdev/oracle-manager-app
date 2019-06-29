@@ -1,12 +1,12 @@
 pragma solidity >=0.4.24;
 
-import './IAdapter.sol';
+import './IExchangeAdapter.sol';
 import './dependencies/UniswapExchangeInterface.sol';
 import './dependencies/UniswapFactoryInterface.sol';
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
 
-contract UniswapAdapter is IAdapter {
+contract UniswapAdapter is IExchangeAdapter {
   using SafeMath for uint;
 
   event PriceCalculated(uint price, address token1, address token2);
