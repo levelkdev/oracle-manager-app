@@ -18,7 +18,7 @@ module.exports = async (
     console.log(`Deploying dependencies for "${network}" network`)
     console.log('')
 
-    const uniswapFactoryAddr = deployConfig.dependencyContracts.UniswapFactory
+    const uniswapFactoryAddr = deployConfig.dependencyAddrs.UniswapFactory
 
     const uniswapAdapter = await tryDeploy(
       UniswapAdapter,

@@ -2,9 +2,10 @@ const fs = require('fs')
 
 module.exports = function readDeployConfig (network) {
   try {
-    let contents = fs.readFileSync(`deploy.${network}.json`)
-    return JSON.parse(contents)
+    let dependencyAddrs = JSON.parse(fs.readFileSync(`deploy.${network}.json`))
+    let tokenAddrs = JSON.parse(fs.readFileSync(`tokens.${network}.json`))
+    return { dependencyAddrs, tokenAddrs}
   } catch (err) {
-    console.log(`No existing deploy.${network}.json file found`)
+    console.log(`No existing ${network}.json file found:`, err)
   }
 }
