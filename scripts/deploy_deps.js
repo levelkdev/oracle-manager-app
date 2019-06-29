@@ -11,7 +11,7 @@ module.exports = async (
   } = {}
 ) => {
   const UniswapAdapter = artifacts.require('UniswapAdapter')
-  const OracleManagerDataFeed = artifacts.require('OracleManagerDataFeed')
+  const TokenPriceDataFeed = artifacts.require('TokenPriceDataFeed')
   const deployConfig = configForNetwork(network)
 
   try {
