@@ -22,7 +22,7 @@
     "redux-thunk": "2.3.0",
     "rxjs-compat": "6.4.0",
     "styled-components": "4.1.3",
-    "tidbit": "github:levelkdev/tidbit#79671c29aeaf35f74f06d2b4349d4ed053ee1faf",
+    "tidbit": "github:levelkdev/tidbit#1e0fd9cb708d2f26a2f9e6548ae787a2f0281cd9",
     "web3-utils": "1.0.0-beta.50"
   },
   "devDependencies": {

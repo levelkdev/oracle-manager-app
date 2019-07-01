@@ -5,7 +5,7 @@ const UniswapExchangeMock = artifacts.require('UniswapExchangeMock.sol')
 const { increaseTime, uintToBytes32 } = require('./helpers')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
-contract.only('UniswapAdapter', (accounts) => {
+contract('UniswapAdapter', (accounts) => {
   let uniswapAdapter, uniswapFactoryMock, uniswapExchangeMock1, uniswapExchangeMock2
 
   beforeEach(async () => {

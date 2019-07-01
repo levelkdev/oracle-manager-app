@@ -48,7 +48,7 @@ contract('OracleManagerApp', (accounts) => {
 
     await dataFeed1.initialize(root)
     await dataFeed2.initialize(root)
-    await medianDataFeed.initialize([dataFeed1.address, dataFeed2.address ], oracleManagerApp.address)
+    await medianDataFeed.initialize([dataFeed1.address, dataFeed2.address], oracleManagerApp.address)
   })
 
   describe('initialize()', () => {
