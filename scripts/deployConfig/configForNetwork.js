@@ -1,4 +1,4 @@
-const readDeployConfig = require('./readDeployConfig')
+const fs = require('fs')
 const isLocalNetwork = require('./isLocalNetwork')
 
 const defaultDependencyAddrs = {
@@ -18,6 +18,16 @@ module.exports = function configForEnv (network) {
     return defaultConf('rpc')
   } else {
     return readDeployConfig(network) || defaultConf(network)
+  }
+}
+
+function readDeployConfig (network) {
+  try {
+    let dependencyAddrs = JSON.parse(fs.readFileSync(`deploy.${network}.json`))
+    let tokenAddrs = JSON.parse(fs.readFileSync(`tokens.${network}.json`))
+    return { dependencyAddrs, tokenAddrs }
+  } catch (err) {
+    console.log(`No existing ${network}.json file found:`, err)
   }
 }
 
