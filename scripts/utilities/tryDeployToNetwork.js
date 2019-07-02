@@ -13,6 +13,7 @@ const tryDeployToNetwork = async (network, contractArtifact, contractName, param
     contractInstance = await contractArtifact.at(deployedAddress)
     console.log(`${contractName} already deployed: ${deployedAddress}`)
   }
+  console.log('')
   return contractInstance
 }
 
