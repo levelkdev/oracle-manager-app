@@ -26,12 +26,12 @@ module.exports = async (
       [ uniswapFactoryAddr ]
     )
 
-    const antToDai_uniswap_dataFeed = await tryDeploy(
+    const dataFeed_uniswap_ANT_DAI = await tryDeploy(
       TokenPriceDataFeed,
-      'antToDai_uniswap_dataFeed',
+      'dataFeed_uniswap_ANT_DAI',
       []
     )
-    await antToDai_uniswap_dataFeed.initialize(deployConfig.tokenAddrs.ant, deployConfig.tokenAddrs.dai, uniswapAdapter.address)
+    await dataFeed_uniswap_ANT_DAI.initialize(deployConfig.tokenAddrs.ant, deployConfig.tokenAddrs.dai, uniswapAdapter.address)
 
     if (typeof truffleExecCallback === 'function') {
       truffleExecCallback()
