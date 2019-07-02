@@ -14,7 +14,7 @@ module.exports = async (
     const network = process.argv[5]
     const UniswapAdapter = artifacts.require('UniswapAdapter.sol')
     const config = configForNetwork(network)
-    const uniswapAdapter = UniswapAdapter.at(config.dependencyContracts.UniswapAdapter)
+    const uniswapAdapter = UniswapAdapter.at(config.dependencyAddrs.UniswapAdapter)
 
 
     console.log(`Pinging Uniswap for token pair: ${token1} ${token2}`)

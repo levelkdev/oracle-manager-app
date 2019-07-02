@@ -1,9 +1,9 @@
 pragma solidity >=0.4.24;
 
 import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
-import './Adapters/IAdapter.sol';
+import './Adapters/IExchangeAdapter.sol';
 
-contract OracleManagerDataFeed is DataFeedOracleBase {
+contract TokenPriceDataFeed is DataFeedOracleBase {
   address public token1;
   address public token2;
 
@@ -14,6 +14,6 @@ contract OracleManagerDataFeed is DataFeedOracleBase {
   }
 
   function logResult() public {
-    IAdapter(dataSource).ping(token1, token2);
+    IExchangeAdapter(dataSource).ping(token1, token2);
   }
 }

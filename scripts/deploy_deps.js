@@ -11,20 +11,27 @@ module.exports = async (
   } = {}
 ) => {
   const UniswapAdapter = artifacts.require('UniswapAdapter')
-  const OracleManagerDataFeed = artifacts.require('OracleManagerDataFeed')
+  const TokenPriceDataFeed = artifacts.require('TokenPriceDataFeed')
   const deployConfig = configForNetwork(network)
 
   try {
     console.log(`Deploying dependencies for "${network}" network`)
     console.log('')
 
-    const uniswapFactoryAddr = deployConfig.dependencyContracts.UniswapFactory
+    const uniswapFactoryAddr = deployConfig.dependencyAddrs.UniswapFactory
 
     const uniswapAdapter = await tryDeploy(
       UniswapAdapter,
       'UniswapAdapter',
       [ uniswapFactoryAddr ]
     )
+
+    const dataFeed_uniswap_ANT_DAI = await tryDeploy(
+      TokenPriceDataFeed,
+      'dataFeed_uniswap_ANT_DAI',
+      []
+    )
+    await dataFeed_uniswap_ANT_DAI.initialize(deployConfig.tokenAddrs.ant, deployConfig.tokenAddrs.dai, uniswapAdapter.address)
 
     if (typeof truffleExecCallback === 'function') {
       truffleExecCallback()

@@ -1,11 +1,11 @@
-const OracleManagerDataFeed = artifacts.require('OracleManagerDataFeed.sol')
+const TokenPriceDataFeed = artifacts.require('TokenPriceDataFeed.sol')
 const UniswapAdapter = artifacts.require('UniswapAdapter.sol')
 const UniswapFactoryMock = artifacts.require('UniswapFactoryMock.sol')
 const UniswapExchangeMock = artifacts.require('UniswapExchangeMock.sol')
 const { increaseTime, uintToBytes32 } = require('./helpers')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
-contract.only('UniswapAdapter', (accounts) => {
+contract('UniswapAdapter', (accounts) => {
   let uniswapAdapter, uniswapFactoryMock, uniswapExchangeMock1, uniswapExchangeMock2
 
   beforeEach(async () => {
@@ -22,11 +22,11 @@ contract.only('UniswapAdapter', (accounts) => {
   })
 
   describe('ping()', () => {
-    let oracleManagerDataFeed
+    let tokenPriceDataFeed
 
     beforeEach(async () => {
-      oracleManagerDataFeed = await OracleManagerDataFeed.new()
-      await oracleManagerDataFeed.initialize(
+      tokenPriceDataFeed = await TokenPriceDataFeed.new()
+      await tokenPriceDataFeed.initialize(
         uniswapExchangeMock1.address,
         uniswapExchangeMock2.address,
         uniswapAdapter.address
@@ -35,8 +35,8 @@ contract.only('UniswapAdapter', (accounts) => {
 
     it('updates the DataFeed with the correct price and date', async () => {
       const expectedResult = uintToBytes32(await getExpectedPrice(uniswapExchangeMock1, uniswapExchangeMock2))
-      await oracleManagerDataFeed.logResult();
-      const returnedResult = await oracleManagerDataFeed.resultByIndexFor(1)
+      await tokenPriceDataFeed.logResult();
+      const returnedResult = await tokenPriceDataFeed.resultByIndexFor(1)
 
       expect(returnedResult[0]).to.equal(expectedResult)
       expect(returnedResult[1].toNumber()).to.be.greaterThan(0)
