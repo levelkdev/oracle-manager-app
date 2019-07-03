@@ -1,13 +1,12 @@
 pragma solidity >=0.4.24;
 
-import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
-import 'tidbit/contracts/DataFeedOracles/DataFeedOracle.sol';
-import '@aragon/os/contracts/apps/AragonApp.sol';
+import "@aragon/os/contracts/apps/AragonApp.sol";
+import "./ITidbitDataFeedOracle.sol";
 
 contract OracleManagerApp is AragonApp {
   bytes32 public constant MANAGE_DATA_FEEDS = keccak256("MANAGE_DATA_FEEDS");
 
-  DataFeedOracle public medianDataFeed;  // tidbit MedianDataFeedOracle to record median data throughout time
+  ITidbitDataFeedOracle public medianDataFeed;  // tidbit MedianDataFeedOracle to record median data throughout time
   uint public approvedDataFeedsLength;   // number of approvedDataFeeds
   mapping(address => bool) public approvedDataFeeds; // dataFeeds approved to be medianized
   mapping(address => bool) dataFeedAlreadyRecorded; // transitory data structure useful only during function call recordDataMedian
@@ -16,7 +15,7 @@ contract OracleManagerApp is AragonApp {
   * @dev Initializes OracleManagerApp
   * @param _medianDataFeed The data feed that medianizes approvedDataFeeds and records result throughout time
   */
-  function initialize(DataFeedOracle _medianDataFeed)
+  function initialize(ITidbitDataFeedOracle _medianDataFeed)
     public
     onlyInit
   {

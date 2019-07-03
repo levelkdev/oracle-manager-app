@@ -1,10 +1,10 @@
 pragma solidity >=0.4.24;
 
-import './IExchangeAdapter.sol';
-import './dependencies/UniswapExchangeInterface.sol';
-import './dependencies/UniswapFactoryInterface.sol';
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
-import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
+import "tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol";
+import "./IExchangeAdapter.sol";
+import "./Uniswap/UniswapExchangeInterface.sol";
+import "./Uniswap/UniswapFactoryInterface.sol";
 
 contract UniswapAdapter is IExchangeAdapter {
   using SafeMath for uint;

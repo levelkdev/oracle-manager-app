@@ -2,12 +2,8 @@
  * Setup and run deployment on local devchain
  */
 
-// const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-const ZERO_ADDRESS = '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb'
-
 const execa = require('execa')
 const getAccounts = require('@aragon/os/scripts/helpers/get-accounts')
-const deployDeps = require('./deployDataFeeds')
 const defaultOwner = process.env.OWNER
 
 module.exports = async (
@@ -19,6 +15,8 @@ module.exports = async (
   const network = process.argv[5]
 
   try {
+    const MedianDataFeedMock = artifacts.require('MedianDataFeedMock')
+
     let accounts
     if (!owner) {
       accounts = await getAccounts(web3)
@@ -27,21 +25,17 @@ module.exports = async (
 
     console.log(`owner: ${owner}`)
     console.log('')
-
-    console.log('')
-
-    await deployDeps(null, { artifacts, network })
-    console.log('')
-
-    // PLACEHOLDER .. use ZERO_ADDRESS for the median data feed contract
-    const medianDataFeedAddress = ZERO_ADDRESS
+    
+    console.log(`Deploying MedianDataFeedMock...`)
+    const medianDataFeedMock = await MedianDataFeedMock.new()
+    console.log(`Deployed: ${medianDataFeedMock.address}`)
 
     const aragonRunArgs = [
       'run',
       'start:aragon:http',
       '--',
       '--app-init-args',
-      medianDataFeedAddress
+      medianDataFeedMock.address
     ]
 
     console.log(`npm ${aragonRunArgs.join(' ')}`)

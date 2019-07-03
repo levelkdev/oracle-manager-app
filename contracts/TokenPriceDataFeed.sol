@@ -1,7 +1,7 @@
 pragma solidity >=0.4.24;
 
-import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
-import './Adapters/IExchangeAdapter.sol';
+import "tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol";
+import "./Adapters/IExchangeAdapter.sol";
 
 contract TokenPriceDataFeed is DataFeedOracleBase {
   address public token1;
