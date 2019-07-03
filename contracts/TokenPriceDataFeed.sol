@@ -10,7 +10,7 @@ contract TokenPriceDataFeed is DataFeedOracleBase {
   function initialize(address _token1, address _token2, address dataSource) public {
     token1 = _token1;
     token2 = _token2;
-    super.initialize(dataSource);
+    DataFeedOracleBase.initialize(dataSource);
   }
 
   function logResult() public {

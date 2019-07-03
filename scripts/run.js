@@ -7,7 +7,7 @@ const ZERO_ADDRESS = '0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb'
 
 const execa = require('execa')
 const getAccounts = require('@aragon/os/scripts/helpers/get-accounts')
-const deployDeps = require('./deploy_deps')
+const deployDeps = require('./deployDataFeeds')
 const defaultOwner = process.env.OWNER
 
 module.exports = async (
