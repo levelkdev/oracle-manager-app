@@ -1,20 +1,15 @@
 {
   "roles": [
     {
-      "name": "Increment the counter",
-      "id": "INCREMENT_ROLE",
-      "params": []
-    },
-    {
-      "name": "Decrement the counter",
-      "id": "DECREMENT_ROLE",
+      "name": "Manage data feeds",
+      "id": "MANAGE_DATA_FEEDS",
       "params": []
     }
   ],
-  "path": "contracts/CounterApp.sol",
+  "path": "contracts/OracleManagerApp.sol",
   "environments": {
     "default": {
-      "network": "development",
+      "network": "rpc",
       "appName": "oracle-manager-app.aragonpm.eth"
     }
   }

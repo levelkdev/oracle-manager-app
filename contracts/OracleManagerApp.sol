@@ -1,51 +1,34 @@
 pragma solidity >=0.4.24;
 
-import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
-import 'tidbit/contracts/DataFeedOracles/DataFeedOracle.sol';
-import '@aragon/os/contracts/apps/AragonApp.sol';
+import "@aragon/os/contracts/apps/AragonApp.sol";
+import "./ITidbitDataFeedOracle.sol";
 
 contract OracleManagerApp is AragonApp {
+  bytes32 public constant MANAGE_DATA_FEEDS = keccak256("MANAGE_DATA_FEEDS");
 
-  DataFeedOracle public medianDataFeed;  // tidbit MedianDataFeedOracle to record median data throughout time
+  ITidbitDataFeedOracle public medianDataFeed;  // tidbit MedianDataFeedOracle to record median data throughout time
   uint public approvedDataFeedsLength;   // number of approvedDataFeeds
-  mapping(address => bool) public permissionedAccounts; // addresses permitted to add and remove oracles (will probably replace with Aragon's ACL permissions)
   mapping(address => bool) public approvedDataFeeds; // dataFeeds approved to be medianized
   mapping(address => bool) dataFeedAlreadyRecorded; // transitory data structure useful only during function call recordDataMedian
 
-  modifier onlyPermissionAccount(address account) {
-    require(permissionedAccounts[account]);
-    _;
-  }
-
   /**
-  * @dev initializes the OracleManagerApp with initial parameters
-  * @param _permissionedAccounts Addresses allowed to add and remove approvedDataFeeds
-  * @param dataFeeds data feeds to approve
-  * @param _medianDataFeed The data feed that medianize approvedDataFeeds and record result throughout time
+  * @dev Initializes OracleManagerApp
+  * @param _medianDataFeed The data feed that medianizes approvedDataFeeds and records result throughout time
   */
-  function initialize(
-    address[] memory _permissionedAccounts,
-    DataFeedOracleBase[] memory dataFeeds,
-    DataFeedOracle _medianDataFeed
-  ) onlyInit public {
+  function initialize(ITidbitDataFeedOracle _medianDataFeed)
+    public
+    onlyInit
+  {
     medianDataFeed = _medianDataFeed;
-    approvedDataFeedsLength = dataFeeds.length;
-
-    for(uint i=0; i < dataFeeds.length; i++) {
-      require(approvedDataFeeds[dataFeeds[i]] == false, 'dataFeed cannot be a duplicate');
-      approvedDataFeeds[dataFeeds[i]] = true;
-    }
-
-    for(uint j=0; j < _permissionedAccounts.length; j++) {
-      permissionedAccounts[_permissionedAccounts[j]] = true;
-    }
   }
 
   /**
   * @dev calls medianDataFeed with approvedDataFeeds to record median at current moment in time
   * @param dataFeeds All the approvedDataFeeds in ascending order by result
   */
-  function recordDataMedian(DataFeedOracleBase[] memory dataFeeds) public {
+  function recordDataMedian(DataFeedOracleBase[] dataFeeds)
+    external
+  {
     // require all dataFeeds are approved, all approved dataFeeds are included, and no dataFeeds are duplicated
     require(dataFeeds.length == approvedDataFeedsLength);
     for(uint i=0; i < dataFeeds.length; i++) {
@@ -66,10 +49,10 @@ contract OracleManagerApp is AragonApp {
   * @dev Adds approved dataFeed to be medianized
   * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
   */
-  function addOracle(
-    DataFeedOracleBase dataFeed
-    // will probably only be accepted from Voting App in most cases
-  ) onlyPermissionAccount(msg.sender) public {
+  function addDataFeed(DataFeedOracleBase dataFeed) 
+    external
+    auth(MANAGE_DATA_FEEDS)
+  {
     require(!approvedDataFeeds[address(dataFeed)], 'cannot add duplicate oracle');
     approvedDataFeedsLength++;
     approvedDataFeeds[address(dataFeed)] = true;
@@ -77,13 +60,13 @@ contract OracleManagerApp is AragonApp {
   }
 
   /**
-  * @dev Adds approved dataFeed to be medianized
+  * @dev Removes an approved dataFeed
   * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
   */
-  function removeOracle(
-    DataFeedOracleBase dataFeed
-    // will probably only be accepted from Voting App in most cases
-  ) onlyPermissionAccount(msg.sender) public {
+  function removeDataFeed(DataFeedOracleBase dataFeed) 
+    external
+    auth(MANAGE_DATA_FEEDS)
+  {
     require(approvedDataFeeds[address(dataFeed)], 'cannot remove unapproved oracle');
     approvedDataFeedsLength--;
     approvedDataFeeds[address(dataFeed)] = false;
