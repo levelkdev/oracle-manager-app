@@ -70,6 +70,14 @@ contract('OracleManagerApp', (accounts) => {
       expect(await oracleManagerApp.approvedDataFeeds(dataFeed2.address)).to.equal(true)
     })
 
+    it('emits DataFeedAdded events for initial dataFeeds', async () => {
+      const { logs } = await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      expect(logs[0].event).to.equal('DataFeedAdded')
+      expect(logs[1].event).to.equal('DataFeedAdded')
+      expect(logs[0].args.dataFeedAddress).to.equal(dataFeed1.address)
+      expect(logs[1].args.dataFeedAddress).to.equal(dataFeed2.address)
+    })
+
     it('reverts if duplicate dataFeeds are submitted', async () => {
       return assertRevert(async () => {
         await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address, dataFeed1.address], medianDataFeed.address)

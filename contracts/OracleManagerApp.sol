@@ -26,14 +26,12 @@ contract OracleManagerApp is AragonApp {
     onlyInit
   {
     initialized();
-
-    approvedDataFeedsLength = dataFeeds.length;
+  
+    medianDataFeed = _medianDataFeed;
 
     for(uint i=0; i < dataFeeds.length; i++) {
-      require(approvedDataFeeds[dataFeeds[i]] == false, 'dataFeed cannot be a duplicate');
-      approvedDataFeeds[dataFeeds[i]] = true;
+      _addDataFeed(dataFeeds[i]);
     }
-    medianDataFeed = _medianDataFeed;
   }
 
   /**
