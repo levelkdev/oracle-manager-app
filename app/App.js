@@ -1,37 +1,21 @@
 import React from 'react'
-import {
-  AragonApp,
-  Button,
-  Text,
+import { Main, AppBar } from '@aragon/ui'
+import SidePanelDisplayContainer from './containers/SidePanelDisplayContainer'
+import ShowPanelButtonContainer from './containers/ShowPanelButtonContainer'
 
-  observe
-} from '@aragon/ui'
-import Aragon, { providers } from '@aragon/api'
-import styled from 'styled-components'
-
-const AppContainer = styled(AragonApp)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
+const ShowAddOraclePanel = () => (
+  <ShowPanelButtonContainer panelName="addOracle">
+    Add Oracle
+  </ShowPanelButtonContainer>
+)
 
 export default class App extends React.Component {
   render () {
     return (
-      <AppContainer>
-        <div>
-          <ObservedCount observable={this.props.observable} />
-          <Button onClick={() => this.props.app.decrement(1)}>Decrement</Button>
-          <Button onClick={() => this.props.app.increment(1)}>Increment</Button>
-        </div>
-      </AppContainer>
+      <Main>
+        <AppBar title="Oracles" endContent={<ShowAddOraclePanel />} />
+        <SidePanelDisplayContainer />
+      </Main>
     )
   }
 }
-
-const ObservedCount = observe(
-  (state$) => state$,
-  { count: 0 }
-)(
-  ({ count }) => <Text.Block style={{ textAlign: 'center' }} size='xxlarge'>{count}</Text.Block>
-)

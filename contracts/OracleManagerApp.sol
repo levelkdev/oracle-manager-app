@@ -6,6 +6,10 @@ import 'tidbit/contracts/DataFeedOracles/DataFeedOracle.sol';
 import "./ITidbitDataFeedOracle.sol";
 
 contract OracleManagerApp is AragonApp {
+  
+  event DataFeedAdded(address dataFeedAddress);
+  event DataFeedRemoved(address dataFeedAddress);
+
   bytes32 public constant MANAGE_DATA_FEEDS = keccak256("MANAGE_DATA_FEEDS");
 
   ITidbitDataFeedOracle public medianDataFeed;  // tidbit MedianDataFeedOracle to record median data throughout time
@@ -67,6 +71,8 @@ contract OracleManagerApp is AragonApp {
     approvedDataFeedsLength++;
     approvedDataFeeds[address(dataFeed)] = true;
     medianDataFeed.addDataFeed(dataFeed);
+
+    emit DataFeedAdded(address(dataFeed));
   }
 
   /**
@@ -81,5 +87,7 @@ contract OracleManagerApp is AragonApp {
     approvedDataFeedsLength--;
     approvedDataFeeds[address(dataFeed)] = false;
     medianDataFeed.removeDataFeed(dataFeed);
+
+    emit DataFeedRemoved(address(dataFeed));
   }
 }

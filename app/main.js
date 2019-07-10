@@ -2,7 +2,14 @@ import '@babel/polyfill'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+import { Provider } from 'react-redux'
 import Aragon, { providers } from '@aragon/api'
+import { logDebug } from './util/logger'
+import { aragonReduxMiddleware, subscribeToAppState } from './aragonRedux/aragonRedux'
+import { fetchInitData } from './actions'
+import rootReducer from './reducers'
 import App from './App'
 
 window.aragonClient = new Aragon(new providers.WindowMessage(window.parent))
@@ -15,9 +22,17 @@ window.aragonClient.rpc.provider.messages().subscribe(payload => {
   }
 })
 
+const store = createStore(
+  rootReducer,
+  applyMiddleware(
+    thunk,
+    aragonReduxMiddleware
+  )
+)
+
 class ConnectedApp extends React.Component {
   state = {
-    app: new Aragon(new providers.WindowMessage(window.parent)),
+    app: window.aragonClient,
     observable: null,
     userAccount: '',
   }
@@ -44,22 +59,22 @@ class ConnectedApp extends React.Component {
     }
     if (data.name === 'ready') {
       const { app } = this.state
+
       this.sendMessageToWrapper('ready', true)
-      this.setState({
-        observable: app.state(),
-      })
-      app.accounts().subscribe(accounts => {
-        this.setState({
-          userAccount: accounts[0],
-        })
-      })
+
+      store.dispatch(subscribeToAppState(app))
+      store.dispatch(fetchInitData())
     }
   }
   sendMessageToWrapper = (name, value) => {
     window.parent.postMessage({ from: 'app', name, value }, '*')
   }
   render() {
-    return <App {...this.state} />
+    return (
+      <Provider store={store}>
+        <App {...this.state} />
+      </Provider>
+    )
   }
 }
 ReactDOM.render(
