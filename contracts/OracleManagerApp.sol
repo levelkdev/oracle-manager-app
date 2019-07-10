@@ -60,12 +60,33 @@ contract OracleManagerApp is AragonApp {
   }
 
   /**
-  * @dev Adds approved dataFeed to be medianized
-  * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
+  * @dev Auth protected function to add a dataFeed
+  * @param dataFeed The dataFeed to be added
   */
   function addDataFeed(DataFeedOracleBase dataFeed)
     external
     auth(MANAGE_DATA_FEEDS)
+  {
+    _addDataFeed(dataFeed);
+  }
+
+  /**
+  * @dev Auth protected function to remove a dataFeed
+  * @param dataFeed The dataFeed to be removed
+  */
+  function removeDataFeed(DataFeedOracleBase dataFeed)
+    external
+    auth(MANAGE_DATA_FEEDS)
+  {
+    _removeDataFeed(dataFeed);
+  }
+
+  /**
+  * @dev Adds approved dataFeed to be medianized
+  * @param dataFeed The dataFeed to be added
+  */
+  function _addDataFeed(DataFeedOracleBase dataFeed)
+    internal
   {
     require(!approvedDataFeeds[address(dataFeed)], 'cannot add duplicate oracle');
     approvedDataFeedsLength++;
@@ -77,11 +98,10 @@ contract OracleManagerApp is AragonApp {
 
   /**
   * @dev Removes an approved dataFeed
-  * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
+  * @param dataFeed The dataFeed to be removed
   */
-  function removeDataFeed(DataFeedOracleBase dataFeed)
-    external
-    auth(MANAGE_DATA_FEEDS)
+  function _removeDataFeed(DataFeedOracleBase dataFeed)
+    internal
   {
     require(approvedDataFeeds[address(dataFeed)], 'cannot remove unapproved oracle');
     approvedDataFeedsLength--;
