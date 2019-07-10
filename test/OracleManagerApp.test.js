@@ -10,7 +10,7 @@ const DataFeedOracle = artifacts.require('DataFeedOracle.sol')
 
 // Local Contracts
 const OracleManagerApp = artifacts.require('OracleManagerApp.sol')
-const { increaseTime, bytes32ToNum, uintToBytes32 } = require('./helpers')
+const { bytes32ToNum, uintToBytes32 } = require('./helpers')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
 const unixTime = () => Math.round(new Date().getTime() / 1000)
