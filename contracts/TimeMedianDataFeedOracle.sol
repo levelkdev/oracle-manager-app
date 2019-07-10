@@ -7,11 +7,10 @@ contract TimeMedianDataFeedOracle is DataFeedOracleBase {
   using SafeMath for uint;
 
   event Medianized(bytes32 median, uint startDate, uint endDate);
-  event SelectedDates(uint, uint, uint, uint, uint, uint, uint, uint, uint, uint);
-  event PartitionDates(uint, uint, uint, uint, uint, uint, uint, uint, uint, uint);
-  event Date(uint date);
 
-  function medianizeByTimeframe(uint startDate, uint endDate) public returns (bytes32 medianValue) {
+  function medianizeByTimeframe(uint startDate, uint endDate)
+  public
+  returns (bytes32 medianValue) {
     require(startDate < endDate, 'startDate must be less than endDate');
     uint endIndex;
     uint startIndex;
@@ -38,15 +37,11 @@ contract TimeMedianDataFeedOracle is DataFeedOracleBase {
     uint[] memory pt = partitionDates(sd);
     medianValue = results[pt[pt.length / 2]];
     emit Medianized(medianValue, startDate, endDate);
-    /* emit SelectedDates(pt[0], pt[1], pt[2], pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9]);
-    emit PartitionDates(uint(results[pt[0]]), uint(results[pt[1]]), uint(results[pt[2]]), uint(results[pt[3]]),
-      uint(results[pt[4]]), uint(results[pt[5]]), uint(results[pt[6]]), uint(results[pt[7]]), uint(results[pt[8]]),
-      uint(results[pt[9]])); */
-
-    /* emit Date(pt[9]); */
   }
 
-  function medianizeByDates(uint[] orderedDates) public returns (bytes32 medianvalue) {
+  function medianizeByDates(uint[] orderedDates)
+  public
+  returns (bytes32 medianvalue) {
     for (uint i = 0; i < orderedDates.length; i++) {
       uint date = orderedDates[i];
       uint nextDate = orderedDates[i+1];
@@ -58,13 +53,19 @@ contract TimeMedianDataFeedOracle is DataFeedOracleBase {
     return _medianizeByDates(orderedDates);
   }
 
-  function _medianizeByDates(uint[] orderedDates) private returns (bytes32 medianValue) {
+  // Private Functions
+
+  function _medianizeByDates(uint[] orderedDates)
+  private
+  returns (bytes32 medianValue) {
     uint middleIndex = orderedDates.length / 2;
     uint middleDate  = orderedDates[middleIndex];
     medianValue = results[middleDate];
   }
 
-  function partitionDates(uint[] selectedDates) private returns (uint[]) {
+  function partitionDates(uint[] selectedDates)
+  private
+  returns (uint[]) {
     // To minimize complexity, return the higher of the two middle checkpoints in even-sized arrays instead of the average.
     uint k = selectedDates.length.div(2);
     uint left = 0;
@@ -94,12 +95,17 @@ contract TimeMedianDataFeedOracle is DataFeedOracleBase {
     return selectedDates;
   }
 
-  function resultByIndex(uint256 index) external view returns (bytes32) {
+  function resultByIndex(uint256 index)
+  private
+  view
+  returns (bytes32) {
     require(doesIndexExistFor(index), "The index is not been set yet.");
     return results[dates[index]];
   }
 
-  function _createPartialArray(uint start, uint end) private returns (uint[]) {
+  function _createPartialArray(uint start, uint end)
+  private
+  returns (uint[]) {
     uint length = end - start + 1;
     uint[] memory arr = new uint[](length);
     uint index = 0;
@@ -110,7 +116,9 @@ contract TimeMedianDataFeedOracle is DataFeedOracleBase {
     return arr;
   }
 
-  function _isLessThan(uint date1, uint date2) public returns (bool) {
+  function _isLessThan(uint date1, uint date2)
+  private
+  returns (bool) {
     return uint(results[date1]) > uint(results[date2]);
   }
 }
