@@ -56,7 +56,7 @@ contract('TimeMedianDataFeedOracle', (accounts) => {
   describe('medianizeByTimeframe', () => {
     it('finds the correct median in an array of 10 (even)', async () => {
       let result = await dataFeed.medianizeByTimeframe.call(DATE_1, DATE_10)
-      expect(result).to.equal(uintToBytes32(RESULT_5))
+      expect(result).to.equal(uintToBytes32(RESULT_6))
     })
 
     it('finds the correct median in an array of 5 (odd)', async () => {
@@ -71,7 +71,7 @@ contract('TimeMedianDataFeedOracle', (accounts) => {
 
     it('finds the correct median when no results were recorded at or after endDate', async () => {
       let result = await dataFeed.medianizeByTimeframe.call(DATE_3, DATE_10 + 60 * 60 * 24 * 7)
-      expect(result).to.equal(uintToBytes32(RESULT_6))
+      expect(result).to.equal(uintToBytes32(RESULT_7))
     })
 
     it('finds the correct median when no results were recorded at or before startDate', async () => {
@@ -86,12 +86,12 @@ contract('TimeMedianDataFeedOracle', (accounts) => {
 
     it('finds the correct median when startDate is not exact', async () => {
       let result = await dataFeed.medianizeByTimeframe.call(DATE_1, DATE_8 + 60)
-      expect(result).to.equal(uintToBytes32(RESULT_4))
+      expect(result).to.equal(uintToBytes32(RESULT_5))
     })
 
     it('finds the correct median when neither startDate nor endDate are exact', async () => {
       let result = await dataFeed.medianizeByTimeframe.call(DATE_2 + 60, DATE_8 + 60)
-      expect(result).to.equal(uintToBytes32(RESULT_3))
+      expect(result).to.equal(uintToBytes32(RESULT_6))
     })
 
     it('reverts if startDate is after endDate', async () => {
@@ -110,6 +110,51 @@ contract('TimeMedianDataFeedOracle', (accounts) => {
       return assertRevert(async () => {
         await dataFeed.medianizeByTimeframe.call(DATE_1 - 60 * 60, DATE_1 - 60)
       })
+    })
+
+    it('emits a Medianized event with the correct values', async () => {
+      const { logs } = await await dataFeed.medianizeByTimeframe(DATE_1 - 60, DATE_10)
+      expect(logs[0].event).to.equal('MedianizedByTimeframe')
+      expect(logs[0].args.startDate.toNumber()).to.equal(DATE_1 - 60)
+      expect(logs[0].args.endDate.toNumber()).to.equal(DATE_10)
+      expect(logs[0].args.median).to.equal(uintToBytes32(RESULT_6))
+    })
+  })
+
+  describe('medianizeByDates', () => {
+    it('finds the correct median for an odd array', async () => {
+      let result = await dataFeed.medianizeByDates.call([DATE_5, DATE_3, DATE_1, DATE_7, DATE_8])
+      expect(result).to.equal(uintToBytes32(RESULT_5))
+    })
+
+    it('finds the correct median for even array', async () => {
+      let result = await dataFeed.medianizeByDates.call([DATE_5, DATE_3, DATE_6, DATE_7, DATE_8, DATE_10])
+      expect(result).to.equal(uintToBytes32(RESULT_7))
+    })
+
+    it('reverts if date has no result', async () => {
+      return assertRevert(async () => {
+        await dataFeed.medianizeByDates.call([DATE_2, DATE_1 + 60])
+      })
+    })
+
+    it('reverts if duplicates given', async () => {
+      return assertRevert(async () => {
+        await dataFeed.medianizeByDates.call([DATE_2, DATE_2])
+      })
+    })
+
+    it('reverts if dates are not ordered', async () => {
+      return assertRevert(async () => {
+        await dataFeed.medianizeByDates.call([DATE_1, DATE_2])
+      })
+    })
+
+    it('emits a Medianized event with the correct values', async () => {
+      let orderedDates = [DATE_5, DATE_3, DATE_1, DATE_7, DATE_8]
+      const { logs } = await await dataFeed.medianizeByDates(orderedDates)
+      expect(logs[0].event).to.equal('MedianizedByOrderedDates')
+      expect(logs[0].args.median).to.equal(uintToBytes32(RESULT_5))
     })
   })
 })

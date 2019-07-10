@@ -6,7 +6,10 @@ import "@aragon/os/contracts/lib/math/SafeMath.sol";
 contract TimeMedianDataFeedOracle is DataFeedOracleBase {
   using SafeMath for uint;
 
-  event Medianized(bytes32 median, uint startDate, uint endDate);
+  event MedianizedByTimeframe(bytes32 median, uint startDate, uint endDate);
+  event MedianizedByOrderedDates(bytes32 median, uint[] dates);
+
+  mapping(uint => bool) dateAlreadyAccountedFor; // transitory data structure useful only during function call medianizeByDates
 
   function medianizeByTimeframe(uint startDate, uint endDate)
   public
@@ -33,27 +36,37 @@ contract TimeMedianDataFeedOracle is DataFeedOracleBase {
       }
     }
 
-    uint[] memory sd = _createPartialArray(startIndex, endIndex);
-    uint[] memory pt = partitionDates(sd);
-    medianValue = results[pt[pt.length / 2]];
-    emit Medianized(medianValue, startDate, endDate);
+    uint[] memory selectedDates = _createPartialArray(startIndex, endIndex);
+    uint[] memory partitionedDates = partitionDates(selectedDates);
+    medianValue = _medianizeByDates(partitionedDates);
+    emit MedianizedByTimeframe(medianValue, startDate, endDate);
   }
 
   function medianizeByDates(uint[] orderedDates)
   public
-  returns (bytes32 medianvalue) {
+  returns (bytes32 medianValue) {
     for (uint i = 0; i < orderedDates.length; i++) {
       uint date = orderedDates[i];
-      uint nextDate = orderedDates[i+1];
       require(isResultSetFor(date), "Date not set.");
-      if(i != orderedDates.length - 1) {
-        require(uint(results[date]) <= uint(results[nextDate]), "The dates are not sorted by result.");
+      require(!dateAlreadyAccountedFor[date], 'Date cannot be a duplicate');
+      dateAlreadyAccountedFor[orderedDates[i]] = true;
+      if (i != orderedDates.length - 1) {
+        require(uint(results[date]) <= uint(results[orderedDates[i+1]]), "The dates are not sorted by result.");
       }
     }
-    return _medianizeByDates(orderedDates);
+
+    // reset dataFeedAlreadyRecorded
+    for(uint j=0; j < orderedDates.length; j++) {
+      dateAlreadyAccountedFor[orderedDates[j]] = false;
+    }
+
+    medianValue = _medianizeByDates(orderedDates);
+    emit MedianizedByOrderedDates(medianValue, orderedDates);
   }
 
   // Private Functions
+
+  event MiddleIndex(uint middleIndex);
 
   function _medianizeByDates(uint[] orderedDates)
   private
@@ -119,6 +132,6 @@ contract TimeMedianDataFeedOracle is DataFeedOracleBase {
   function _isLessThan(uint date1, uint date2)
   private
   returns (bool) {
-    return uint(results[date1]) > uint(results[date2]);
+    return uint(results[date1]) < uint(results[date2]);
   }
 }
