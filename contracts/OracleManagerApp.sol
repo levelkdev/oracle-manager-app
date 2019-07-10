@@ -1,6 +1,8 @@
 pragma solidity >=0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
+import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
+import 'tidbit/contracts/DataFeedOracles/DataFeedOracle.sol';
 import "./ITidbitDataFeedOracle.sol";
 
 contract OracleManagerApp is AragonApp {
@@ -15,10 +17,18 @@ contract OracleManagerApp is AragonApp {
   * @dev Initializes OracleManagerApp
   * @param _medianDataFeed The data feed that medianizes approvedDataFeeds and records result throughout time
   */
-  function initialize(ITidbitDataFeedOracle _medianDataFeed)
+  function initialize(DataFeedOracleBase[] memory dataFeeds, ITidbitDataFeedOracle _medianDataFeed)
     public
     onlyInit
   {
+    initialized();
+
+    approvedDataFeedsLength = dataFeeds.length;
+
+    for(uint i=0; i < dataFeeds.length; i++) {
+      require(approvedDataFeeds[dataFeeds[i]] == false, 'dataFeed cannot be a duplicate');
+      approvedDataFeeds[dataFeeds[i]] = true;
+    }
     medianDataFeed = _medianDataFeed;
   }
 
@@ -49,7 +59,7 @@ contract OracleManagerApp is AragonApp {
   * @dev Adds approved dataFeed to be medianized
   * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
   */
-  function addDataFeed(DataFeedOracleBase dataFeed) 
+  function addDataFeed(DataFeedOracleBase dataFeed)
     external
     auth(MANAGE_DATA_FEEDS)
   {
@@ -63,7 +73,7 @@ contract OracleManagerApp is AragonApp {
   * @dev Removes an approved dataFeed
   * @param dataFeed The dataFeed to be approved for this instance of OracleManagerApp
   */
-  function removeDataFeed(DataFeedOracleBase dataFeed) 
+  function removeDataFeed(DataFeedOracleBase dataFeed)
     external
     auth(MANAGE_DATA_FEEDS)
   {
