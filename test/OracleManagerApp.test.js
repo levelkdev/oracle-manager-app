@@ -142,7 +142,7 @@ contract('OracleManagerApp', (accounts) => {
       expect(await medianDataFeed.dataSources(newlyApprovedDataFeed.address)).to.equal(true)
     })
 
-    it.only('emits DataFeedAdded event', async () => {
+    it('emits DataFeedAdded event', async () => {
       const { logs } = await oracleManagerApp.addDataFeed(newlyApprovedDataFeed.address)
       expect(logs[0].event).to.equal('DataFeedAdded')
       expect(logs[0].args.dataFeedAddress).to.equal(newlyApprovedDataFeed.address)
@@ -183,7 +183,7 @@ contract('OracleManagerApp', (accounts) => {
       expect(await medianDataFeed.dataSources(dataFeed1.address)).to.equal(false)
     })
 
-    it.only('emits DataFeedRemoved event', async () => {
+    it('emits DataFeedRemoved event', async () => {
       const { logs } = await oracleManagerApp.removeDataFeed(dataFeed1.address)
       expect(logs[0].event).to.equal('DataFeedRemoved')
       expect(logs[0].args.dataFeedAddress).to.equal(dataFeed1.address)
