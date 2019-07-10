@@ -142,6 +142,12 @@ contract('OracleManagerApp', (accounts) => {
       expect(await medianDataFeed.dataSources(newlyApprovedDataFeed.address)).to.equal(true)
     })
 
+    it.only('emits DataFeedAdded event', async () => {
+      const { logs } = await oracleManagerApp.addDataFeed(newlyApprovedDataFeed.address)
+      expect(logs[0].event).to.equal('DataFeedAdded')
+      expect(logs[0].args.dataFeedAddress).to.equal(newlyApprovedDataFeed.address)
+    })
+
     it('reverts if dataFeed is already approved', async () => {
       return assertRevert(async () => {
         await oracleManagerApp.addDataFeed(dataFeed1.address)
@@ -175,6 +181,12 @@ contract('OracleManagerApp', (accounts) => {
       expect(await medianDataFeed.dataSources(dataFeed1.address)).to.equal(true)
       await oracleManagerApp.removeDataFeed(dataFeed1.address)
       expect(await medianDataFeed.dataSources(dataFeed1.address)).to.equal(false)
+    })
+
+    it.only('emits DataFeedRemoved event', async () => {
+      const { logs } = await oracleManagerApp.removeDataFeed(dataFeed1.address)
+      expect(logs[0].event).to.equal('DataFeedRemoved')
+      expect(logs[0].args.dataFeedAddress).to.equal(dataFeed1.address)
     })
 
     it('reverts if datafeed is not currently approved', async () => {
