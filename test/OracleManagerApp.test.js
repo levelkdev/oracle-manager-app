@@ -6,7 +6,7 @@ const Kernel = artifacts.require('Kernel')
 
 // Tidbit contracts
 const DataFeedOracleBase = artifacts.require('DataFeedOracleBase.sol')
-const DataFeedOracle = artifacts.require('DataFeedOracle.sol')
+const MedianDataFeedOracle = artifacts.require('MedianDataFeedOracle.sol')
 
 // Local Contracts
 const OracleManagerApp = artifacts.require('OracleManagerApp.sol')
@@ -41,7 +41,7 @@ contract('OracleManagerApp', (accounts) => {
     // deploy data feed oracles
     dataFeed1 = await DataFeedOracleBase.new()
     dataFeed2 = await DataFeedOracleBase.new()
-    medianDataFeed = await DataFeedOracle.new()
+    medianDataFeed = await MedianDataFeedOracle.new()
     //
     // // initialize oracleManagerApp
     oracleManagerApp = await OracleManagerApp.at(receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy)
