@@ -10,7 +10,7 @@ const MedianDataFeedOracle = artifacts.require('MedianDataFeedOracle.sol')
 
 // Local Contracts
 const OracleManagerApp = artifacts.require('OracleManagerApp.sol')
-const { increaseTime, bytes32ToNum, uintToBytes32 } = require('./helpers')
+const { bytes32ToNum, uintToBytes32 } = require('./helpers')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
 
 const unixTime = () => Math.round(new Date().getTime() / 1000)
@@ -54,6 +54,18 @@ contract('OracleManagerApp', (accounts) => {
   })
 
   describe('initialize()', () => {
+    it('initializes the contract', async () => {
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      expect(await oracleManagerApp.hasInitialized()).to.equal(true)
+    })
+
+    it('reverts if called a second time', async () => {
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      return assertRevert(async () => {
+        await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      })
+    })
+
     it('sets the correct medianDataFeed', async () => {
       await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
       expect(await oracleManagerApp.medianDataFeed()).to.equal(medianDataFeed.address)
@@ -68,6 +80,14 @@ contract('OracleManagerApp', (accounts) => {
       await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
       expect(await oracleManagerApp.approvedDataFeeds(dataFeed1.address)).to.equal(true)
       expect(await oracleManagerApp.approvedDataFeeds(dataFeed2.address)).to.equal(true)
+    })
+
+    it('emits DataFeedAdded events for initial dataFeeds', async () => {
+      const { logs } = await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      expect(logs[0].event).to.equal('DataFeedAdded')
+      expect(logs[1].event).to.equal('DataFeedAdded')
+      expect(logs[0].args.dataFeedAddress).to.equal(dataFeed1.address)
+      expect(logs[1].args.dataFeedAddress).to.equal(dataFeed2.address)
     })
 
     it('reverts if duplicate dataFeeds are submitted', async () => {
@@ -142,6 +162,12 @@ contract('OracleManagerApp', (accounts) => {
       expect(await medianDataFeed.dataSources(newlyApprovedDataFeed.address)).to.equal(true)
     })
 
+    it('emits DataFeedAdded event', async () => {
+      const { logs } = await oracleManagerApp.addDataFeed(newlyApprovedDataFeed.address)
+      expect(logs[0].event).to.equal('DataFeedAdded')
+      expect(logs[0].args.dataFeedAddress).to.equal(newlyApprovedDataFeed.address)
+    })
+
     it('reverts if dataFeed is already approved', async () => {
       return assertRevert(async () => {
         await oracleManagerApp.addDataFeed(dataFeed1.address)
@@ -175,6 +201,12 @@ contract('OracleManagerApp', (accounts) => {
       expect(await medianDataFeed.dataSources(dataFeed1.address)).to.equal(true)
       await oracleManagerApp.removeDataFeed(dataFeed1.address)
       expect(await medianDataFeed.dataSources(dataFeed1.address)).to.equal(false)
+    })
+
+    it('emits DataFeedRemoved event', async () => {
+      const { logs } = await oracleManagerApp.removeDataFeed(dataFeed1.address)
+      expect(logs[0].event).to.equal('DataFeedRemoved')
+      expect(logs[0].args.dataFeedAddress).to.equal(dataFeed1.address)
     })
 
     it('reverts if datafeed is not currently approved', async () => {
