@@ -21,8 +21,8 @@ contract OracleManagerApp is AragonApp {
   * @dev Initializes OracleManagerApp
   * @param _medianDataFeed The data feed that medianizes approvedDataFeeds and records result throughout time
   */
-  function initialize(DataFeedOracleBase[] memory dataFeeds, ITidbitDataFeedOracle _medianDataFeed)
-    public
+  function initialize(DataFeedOracleBase[] dataFeeds, ITidbitDataFeedOracle _medianDataFeed)
+    external
   {
     initialized();
   
