@@ -85,7 +85,7 @@ contract OracleManagerApp is AragonApp {
   function _addDataFeed(DataFeedOracleBase dataFeed)
     internal
   {
-    require(!approvedDataFeeds[address(dataFeed)], 'cannot add duplicate oracle');
+    require(!approvedDataFeeds[address(dataFeed)], 'cannot add duplicate dataFeed');
     approvedDataFeedsLength++;
     approvedDataFeeds[address(dataFeed)] = true;
     medianDataFeed.addDataFeed(dataFeed);
@@ -100,7 +100,7 @@ contract OracleManagerApp is AragonApp {
   function _removeDataFeed(DataFeedOracleBase dataFeed)
     internal
   {
-    require(approvedDataFeeds[address(dataFeed)], 'cannot remove unapproved oracle');
+    require(approvedDataFeeds[address(dataFeed)], 'cannot remove unapproved dataFeed');
     approvedDataFeedsLength--;
     approvedDataFeeds[address(dataFeed)] = false;
     medianDataFeed.removeDataFeed(dataFeed);
