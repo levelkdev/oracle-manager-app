@@ -23,7 +23,6 @@ contract OracleManagerApp is AragonApp {
   */
   function initialize(DataFeedOracleBase[] memory dataFeeds, ITidbitDataFeedOracle _medianDataFeed)
     public
-    onlyInit
   {
     initialized();
   

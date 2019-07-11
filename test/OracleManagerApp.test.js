@@ -54,6 +54,18 @@ contract('OracleManagerApp', (accounts) => {
   })
 
   describe('initialize()', () => {
+    it('initializes the contract', async () => {
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      expect(await oracleManagerApp.hasInitialized()).to.equal(true)
+    })
+
+    it('reverts if called a second time', async () => {
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      return assertRevert(async () => {
+        await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
+      })
+    })
+
     it('sets the correct medianDataFeed', async () => {
       await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
       expect(await oracleManagerApp.medianDataFeed()).to.equal(medianDataFeed.address)
