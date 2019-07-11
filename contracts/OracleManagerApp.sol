@@ -25,7 +25,7 @@ contract OracleManagerApp is AragonApp {
     external
   {
     initialized();
-  
+
     medianDataFeed = _medianDataFeed;
 
     for(uint i=0; i < dataFeeds.length; i++) {
