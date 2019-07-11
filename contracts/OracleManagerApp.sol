@@ -15,7 +15,7 @@ contract OracleManagerApp is AragonApp {
   ITidbitDataFeedOracle public medianDataFeed;  // tidbit MedianDataFeedOracle to record median data throughout time
   uint public approvedDataFeedsLength;   // number of approvedDataFeeds
   mapping(address => bool) public approvedDataFeeds; // dataFeeds approved to be medianized
-  mapping(address => bool) public dataFeedRecorded; // transitory data structure useful only during function call recordDataMedian
+  mapping(address => bool) public dataFeedAlreadyRecorded; // transitory data structure useful only during function call recordDataMedian
 
   /**
   * @dev Initializes OracleManagerApp
@@ -44,15 +44,15 @@ contract OracleManagerApp is AragonApp {
     require(dataFeeds.length == approvedDataFeedsLength);
     for(uint i=0; i < dataFeeds.length; i++) {
       require(approvedDataFeeds[address(dataFeeds[i])], 'dataFeed is not approved');
-      require(!dataFeedRecorded[address(dataFeeds[i])], 'dataFeed cannot be a duplicate');
-      dataFeedRecorded[dataFeeds[i]] = true;
+      require(!dataFeedAlreadyRecorded[address(dataFeeds[i])], 'dataFeed cannot be a duplicate');
+      dataFeedAlreadyRecorded[dataFeeds[i]] = true;
     }
 
     medianDataFeed.setResult(dataFeeds);
 
-    // reset dataFeedRecorded
+    // reset dataFeedAlreadyRecorded
     for(uint j=0; j < dataFeeds.length; j++) {
-      dataFeedRecorded[dataFeeds[j]] = false;
+      dataFeedAlreadyRecorded[dataFeeds[j]] = false;
     }
   }
 
