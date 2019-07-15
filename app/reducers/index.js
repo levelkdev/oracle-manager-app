@@ -5,12 +5,14 @@ import propValue from './propValue'
 import initDataLoadStates from './initDataLoadStates'
 import initDataProps from './initDataProps'
 import sidePanel from './sidePanel'
+import dataFeeds from './dataFeeds'
 
 let reducers = {
   appEvents,
   initDataLoadStates,
   form,
-  sidePanel
+  sidePanel,
+  dataFeeds
 }
 
 initDataProps.forEach(val => {
