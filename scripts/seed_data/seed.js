@@ -1,8 +1,6 @@
-const BigNumber = require('bignumber.js')
-const advanceTime = require('../utilities/advanceTime')
+const oracleManagerAppContract = require('../utilities/oracleManagerAppContract')
 
 module.exports = async (callback) => {
-
   try {
     const daoAddress = process.argv[6]
     const dataFileId = process.argv[7] || 0
@@ -16,7 +14,27 @@ module.exports = async (callback) => {
     console.log('seeding data...')
     console.log('')
 
-    // TODO: seed here
+    const oracleManagerApp = await oracleManagerAppContract(artifacts, daoAddress)
+
+    const seedData = require('./data/data_' + dataFileId + '.json')
+
+    for (var j = 0; j < seedData.length; j++) {
+      const data = seedData[j]
+      switch(data.type) {
+        case 'addDataFeed':
+          const { address } = data
+          console.log(`Adding data feed ${address}`)
+          await oracleManagerApp.addDataFeed(address)
+          console.log(`Data feed added`)
+          console.log(``)
+          break
+        default:
+          throw new Error(`${data.type} is not a valid type`)
+      }
+    }
+  } catch (err) {
+    console.log('Error in scripts/seed_data/seed.js: ', err)
+  }
 
   callback()
 }
