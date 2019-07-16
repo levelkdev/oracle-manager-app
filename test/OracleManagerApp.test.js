@@ -71,7 +71,7 @@ contract('OracleManagerApp', (accounts) => {
       expect(await oracleManagerApp.medianDataFeed()).to.equal(medianDataFeed.address)
     })
 
-    // Renable adding data feeds on initialize when
+    // TODO: Renable adding data feeds on initialize when
     // https://github.com/aragon/aragon-cli/pull/623 is resolved
     //
     // it('sets the correct approvedDataFeedsLength', async () => {
