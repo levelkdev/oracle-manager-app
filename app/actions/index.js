@@ -2,11 +2,19 @@ import _ from 'lodash'
 import { logDebug, logError } from '../util/logger'
 import client from '../client'
 
-export const addOracle = ({ address }) => dispatch => {
-  return client.addOracle({ address }).then(txHash => {
-    logDebug(`client.addOracle: tx:`, txHash)
+export const addDataFeed = ({ address }) => dispatch => {
+  return client.addDataFeed({ address }).then(txHash => {
+    logDebug(`client.addDataFeed: tx:`, txHash)
   }, err => {
-    logError(`client.addOracle`, err)
+    logError(`client.addDataFeed`, err)
+  })
+}
+
+export const removeDataFeed = ({ address }) => dispatch => {
+  return client.removeDataFeed({ address }).then(txHash => {
+    logDebug(`client.removeDataFeed: tx:`, txHash)
+  }, err => {
+    logError(`client.removeDataFeed`, err)
   })
 }
 

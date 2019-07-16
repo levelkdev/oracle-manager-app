@@ -4,14 +4,17 @@ import {
   Table,
   TableHeader,
   TableRow,
-  TableCell
+  TableCell,
+  ContextMenu,
+  ContextMenuItem
 } from '@aragon/ui'
 
-const OracleList = ({ oracles }) => (
+const OracleList = ({ oracles, handleRemove }) => (
   <Table
     header={
       <TableRow>
         <TableHeader title="Address" />
+        <TableHeader title="Actions" />
       </TableRow>
     }
   >
@@ -19,6 +22,11 @@ const OracleList = ({ oracles }) => (
       <TableRow key={address}>
         <TableCell>
           <IdentityBadge entity={address} />
+        </TableCell>
+        <TableCell>
+          <ContextMenu>
+            <ContextMenuItem onClick={handleRemove.bind(this, { address })}>Remove</ContextMenuItem>
+          </ContextMenu>
         </TableCell>
       </TableRow>
     ))}

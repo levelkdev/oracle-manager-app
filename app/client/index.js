@@ -1,11 +1,20 @@
 import { logDebug, logError } from '../util/logger'
 import contractFn from './contractFn'
 
-export const addOracle = async ({ address }) => {
+export const addDataFeed = async ({ address }) => {
   return contractFn(
     window.aragonClient,
     'client',
     'addDataFeed',
+    address
+  )
+}
+
+export const removeDataFeed = async ({ address }) => {
+  return contractFn(
+    window.aragonClient,
+    'client',
+    'removeDataFeed',
     address
   )
 }
@@ -43,5 +52,6 @@ export const latestBlock = async () => {
 export default {
   accounts,
   latestBlock,
-  addOracle
+  addDataFeed,
+  removeDataFeed
 }
