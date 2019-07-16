@@ -42,12 +42,12 @@ contract('OracleManagerApp', (accounts) => {
     dataFeed1 = await DataFeedOracleBase.new()
     dataFeed2 = await DataFeedOracleBase.new()
     medianDataFeed = await MedianDataFeedOracle.new()
-    //
-    // // initialize oracleManagerApp
+
+    // initialize oracleManagerApp
     oracleManagerApp = await OracleManagerApp.at(receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy)
     const MANAGE_DATA_FEEDS = await oracleManagerApp.MANAGE_DATA_FEEDS()
     await acl.createPermission(root, oracleManagerApp.address, MANAGE_DATA_FEEDS, root);
-    // //
+
     await dataFeed1.initialize(root)
     await dataFeed2.initialize(root)
     await medianDataFeed.initialize([dataFeed1.address, dataFeed2.address], oracleManagerApp.address)
