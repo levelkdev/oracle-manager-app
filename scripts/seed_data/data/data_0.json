@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "type": "addDataFeed",
+    "address": "0x1B6EF4b0931b05834B0291fDc158ECD1DE93F326"
+  },
+  {
+    "type": "addDataFeed",
+    "address": "0xe27bd65c3e316Bd000ea4ebf75FB60a83f08B889"
+  },
+  {
+    "type": "addDataFeed",
+    "address": "0x4c7e5B84F0DBB5192483Ac3a36EC2D6A75ccA60E"
+  }
+]

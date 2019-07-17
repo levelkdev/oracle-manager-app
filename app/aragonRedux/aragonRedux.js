@@ -1,7 +1,10 @@
 import _ from 'lodash'
 
-export const differenceWithEvents = (initialEventState, finalEventState) => {
-  return _.differenceWith(finalEventState, initialEventState, (a, b) => {
+export const filterNewEvents = (initialEventState, finalEventState) => {
+  const validInitialEventState = cleanEventStateVals(initialEventState)
+  const validFinalEventState = cleanEventStateVals(finalEventState)
+
+  return _.differenceWith(validFinalEventState, validInitialEventState, (a, b) => {
     return a.transactionHash == b.transactionHash
   })
 }
@@ -10,7 +13,7 @@ export const aragonReduxMiddleware = store => next => action => {
   const initialEventState = store.getState().appEvents
   let result = next(action)
   if (action.type == 'UPDATE_APP_EVENTS') {
-    const newEvents = differenceWithEvents(
+    const newEvents = filterNewEvents(
       initialEventState,
       store.getState().appEvents
     )
@@ -59,3 +62,8 @@ export const pascalToUpperSnake = s => {
     }
   ).replace(/^_/, '').toUpperCase()
 }
+
+// remove any events that are undefined or don't have a tx hash
+const cleanEventStateVals = eventStateVals => _.filter(
+  eventStateVals, e => !_.isUndefined(e) && e.transactionHash
+)
