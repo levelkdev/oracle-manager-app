@@ -4,3 +4,4 @@ build
 dist
 flattened_contracts
 .node-xmlhttprequest-**
+secrets.json
