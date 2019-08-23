@@ -9,15 +9,15 @@ module.exports = async (
     artifacts = globalArtifacts
   } = {}
 ) => {
-  const UniswapAdapter = artifacts.require('UniswapAdapter')
-  const TokenPriceDataFeed = artifacts.require('TokenPriceDataFeed')
-  const {
-    uniswapFactory,
-    tokens
-  } = configForNetwork(network)
-  const { ANT, DAI } = tokens
-
   try {
+    const UniswapAdapter = artifacts.require('UniswapAdapter')
+    const TokenPriceDataFeed = artifacts.require('TokenPriceDataFeed')
+    const {
+      uniswapFactory,
+      tokens
+    } = configForNetwork(network)
+    const { ANT, DAI } = tokens
+
     console.log(`Deploying data feeds for "${network}" network`)
     console.log('')
 
@@ -41,6 +41,7 @@ module.exports = async (
         uniswapAdapterAddress: uniswapAdapter.address
       }
     }
+
   } catch (err) {
     console.log('Error in scripts/deployDataFeeds.js: ', err)
   }
