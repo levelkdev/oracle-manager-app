@@ -101,8 +101,12 @@ module.exports = {
   },
   build: {},
   mocha,
+  compilers: {
+    solc: {
+      version: '0.4.24' // Fetch exact version from solc-bin (default: truffle's version)
+    }
+  },
   solc: {
-    version: '0.4.24', // Fetch exact version from solc-bin (default: truffle's version)
     optimizer: {
       enabled: true,
       runs: 10000
