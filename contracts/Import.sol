@@ -8,3 +8,5 @@ import "@aragon/os/contracts/kernel/Kernel.sol";
 import "@aragon/os/contracts/lib/ens/ENS.sol";
 import "@aragon/os/contracts/lib/ens/PublicResolver.sol";
 import 'tidbit/contracts/DataFeedOracles/MedianDataFeedOracle.sol';
+import 'token-price-oracles/contracts/DataFeeds/TokenPriceDataFeed.sol';
+import 'token-price-oracles/contracts/ExchangeAdapters/UniswapAdapter.sol';
