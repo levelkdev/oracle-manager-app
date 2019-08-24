@@ -2,9 +2,10 @@ pragma solidity >=0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import 'tidbit/contracts/DataFeedOracles/MedianDataFeedOracle.sol';
+import 'token-price-oracles/contracts/DataFeeds/TimeMedianDataFeed.sol';
 import "./ITidbitDataFeedOracle.sol";
 
-contract OracleManagerApp is AragonApp, MedianDataFeedOracle {
+contract OracleManagerApp is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
 
   event DataFeedAdded(address dataFeedAddress);
   event DataFeedRemoved(address dataFeedAddress);

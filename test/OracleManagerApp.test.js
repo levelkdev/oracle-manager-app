@@ -10,12 +10,13 @@ const MedianDataFeedOracle = artifacts.require('MedianDataFeedOracle.sol')
 
 // Local Contracts
 const OracleManagerApp = artifacts.require('OracleManagerApp.sol')
-const { bytes32ToNum, uintToBytes32 } = require('./helpers')
+const { bytes32ToNum, increaseTime, uintToBytes32 } = require('./helpers')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
-
+const latestTimestamp = require('./helpers/latestTimestamp')(web3)
+const timeTravel = require('@aragon/test-helpers/timeTravel')(web3)
 const unixTime = () => Math.round(new Date().getTime() / 1000)
 
-contract.only('OracleManagerApp', (accounts) => {
+contract('OracleManagerApp', (accounts) => {
   let daoFactory, oracleManagerAppBase, oracleManagerApp, root
   let dataFeed1, dataFeed2, medianDataFeed
   let APP_MANAGER_ROLE
@@ -50,7 +51,6 @@ contract.only('OracleManagerApp', (accounts) => {
 
     await dataFeed1.initialize(root)
     await dataFeed2.initialize(root)
-    // await medianDataFeed.initialize([dataFeed1.address, dataFeed2.address], oracleManagerApp.address)
   })
 
   describe('initialize()', () => {
@@ -199,6 +199,33 @@ contract.only('OracleManagerApp', (accounts) => {
       return assertRevert(async () => {
         await oracleManagerApp.removeDataFeed(unapprovedDataFeed.address)
       })
+    })
+  })
+
+  describe('medianizeByIndices', () => {
+    beforeEach(async () => {
+      const timehop = 1000
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+
+      await dataFeed1.setResult(uintToBytes32(5), (await latestTimestamp()) - 1)
+      await dataFeed2.setResult(uintToBytes32(7), (await latestTimestamp()) - 1)
+      await oracleManagerApp.setResult([dataFeed1.address, dataFeed2.address])
+
+      await increaseTime(timehop)
+
+      await dataFeed1.setResult(uintToBytes32(7), (await latestTimestamp()) - 1)
+      await dataFeed2.setResult(uintToBytes32(9), (await latestTimestamp()) - 1)
+      await oracleManagerApp.setResult([dataFeed1.address, dataFeed2.address])
+
+      await increaseTime(timehop)
+
+      await dataFeed1.setResult(uintToBytes32(9), (await latestTimestamp()) - 1)
+      await dataFeed2.setResult(uintToBytes32(11), (await latestTimestamp()) - 1)
+      await oracleManagerApp.setResult([dataFeed1.address, dataFeed2.address])
+    })
+
+    it('has correct TimeMedianDataFeed functionality', async () => {
+      expect(await oracleManagerApp.medianizeByIndices(1, 2)).to.equal(uintToBytes32(8))
     })
   })
 })
