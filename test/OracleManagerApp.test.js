@@ -10,9 +10,10 @@ const MedianDataFeedOracle = artifacts.require('MedianDataFeedOracle.sol')
 
 // Local Contracts
 const OracleManagerApp = artifacts.require('OracleManagerApp.sol')
-const { bytes32ToNum, uintToBytes32 } = require('./helpers')
+const { bytes32ToNum, increaseTime, uintToBytes32 } = require('./helpers')
 const { assertRevert } = require('@aragon/test-helpers/assertThrow')
-
+const latestTimestamp = require('./helpers/latestTimestamp')(web3)
+const timeTravel = require('@aragon/test-helpers/timeTravel')(web3)
 const unixTime = () => Math.round(new Date().getTime() / 1000)
 
 contract('OracleManagerApp', (accounts) => {
@@ -50,25 +51,19 @@ contract('OracleManagerApp', (accounts) => {
 
     await dataFeed1.initialize(root)
     await dataFeed2.initialize(root)
-    await medianDataFeed.initialize([dataFeed1.address, dataFeed2.address], oracleManagerApp.address)
   })
 
   describe('initialize()', () => {
     it('initializes the contract', async () => {
-      await oracleManagerApp.initialize(medianDataFeed.address)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
       expect(await oracleManagerApp.hasInitialized()).to.equal(true)
     })
 
     it('reverts if called a second time', async () => {
-      await oracleManagerApp.initialize(medianDataFeed.address)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
       return assertRevert(async () => {
-        await oracleManagerApp.initialize(medianDataFeed.address)
+        await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
       })
-    })
-
-    it('sets the correct medianDataFeed', async () => {
-      await oracleManagerApp.initialize(medianDataFeed.address)
-      expect(await oracleManagerApp.medianDataFeed()).to.equal(medianDataFeed.address)
     })
 
     // TODO: Renable adding data feeds on initialize when
@@ -100,41 +95,39 @@ contract('OracleManagerApp', (accounts) => {
     // })
   })
 
-  describe('recordMedianData()', () => {
+  describe('setResult()', () => {
     let unapprovedDataFeed
 
     beforeEach(async () => {
       unapprovedDataFeed = await DataFeedOracleBase.new()
       await unapprovedDataFeed.initialize(root)
 
-      await oracleManagerApp.initialize(medianDataFeed.address)
-      await oracleManagerApp.addDataFeed(dataFeed1.address)
-      await oracleManagerApp.addDataFeed(dataFeed2.address)
-      await dataFeed1.setResult(uintToBytes32(5), unixTime())
-      await dataFeed2.setResult(uintToBytes32(7), unixTime())
-      await unapprovedDataFeed.setResult(uintToBytes32(9), unixTime())
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
+      await dataFeed1.setResult(uintToBytes32(5), unixTime() - 1)
+      await dataFeed2.setResult(uintToBytes32(7), unixTime() - 1)
+      await unapprovedDataFeed.setResult(uintToBytes32(9), unixTime() - 1)
     })
 
     it('sets the result to the median of the dataFeeds', async () => {
-      await oracleManagerApp.recordDataMedian([dataFeed1.address, dataFeed2.address])
-      expect(bytes32ToNum((await medianDataFeed.resultByIndexFor(1))[0])).to.equal(6)
+      await oracleManagerApp.setResult([dataFeed1.address, dataFeed2.address])
+      expect(bytes32ToNum((await oracleManagerApp.resultByIndex(1))[0])).to.equal(6)
     })
 
     it('reverts if a dataFeed is not approved', async () => {
       return assertRevert(async () => {
-        await oracleManagerApp.recordDataMedian([dataFeed1.address, unapprovedDataFeed.address])
+        await oracleManagerApp.setResult([dataFeed1.address, unapprovedDataFeed.address])
       })
     })
 
     it('reverts if not all approved DataFeeds are included', async () => {
       return assertRevert(async () => {
-        await oracleManagerApp.recordDataMedian([dataFeed1.address])
+        await oracleManagerApp.setResult([dataFeed1.address])
       })
     })
 
     it('reverts if there are duplicated dataFeeds sent', async () => {
       return assertRevert(async () => {
-        await oracleManagerApp.recordDataMedian([dataFeed1.address, dataFeed1.address])
+        await oracleManagerApp.setResult([dataFeed1.address, dataFeed1.address])
       })
     })
   })
@@ -146,13 +139,13 @@ contract('OracleManagerApp', (accounts) => {
       newlyApprovedDataFeed = await DataFeedOracleBase.new()
       await newlyApprovedDataFeed.initialize(root)
 
-      await oracleManagerApp.initialize(medianDataFeed.address)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
     })
 
     it('increases approvedDataFeedsLength by one', async () => {
-      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(0)
+      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(2)
       await oracleManagerApp.addDataFeed(newlyApprovedDataFeed.address)
-      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(1)
+      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(3)
     })
 
     it('sets approvedDataFeeds mapping to true for dataFeed', async () => {
@@ -161,20 +154,13 @@ contract('OracleManagerApp', (accounts) => {
       expect(await oracleManagerApp.approvedDataFeeds(newlyApprovedDataFeed.address)).to.equal(true)
     })
 
-    it('adds the newly approved dataFeed to the medianDataFeed', async () => {
-      expect(await medianDataFeed.dataSources(newlyApprovedDataFeed.address)).to.equal(false)
-      await oracleManagerApp.addDataFeed(newlyApprovedDataFeed.address)
-      expect(await medianDataFeed.dataSources(newlyApprovedDataFeed.address)).to.equal(true)
-    })
-
-    it('emits DataFeedAdded event', async () => {
+    it('emits AddedDataFeed event', async () => {
       const { logs } = await oracleManagerApp.addDataFeed(newlyApprovedDataFeed.address)
-      expect(logs[0].event).to.equal('DataFeedAdded')
-      expect(logs[0].args.dataFeedAddress).to.equal(newlyApprovedDataFeed.address)
+      expect(logs[0].event).to.equal('AddedDataFeed')
+      expect(logs[0].args.dataFeed).to.equal(newlyApprovedDataFeed.address)
     })
 
     it('reverts if dataFeed is already approved', async () => {
-      await oracleManagerApp.addDataFeed(dataFeed1.address)
       return assertRevert(async () => {
         await oracleManagerApp.addDataFeed(dataFeed1.address)
       })
@@ -188,14 +174,13 @@ contract('OracleManagerApp', (accounts) => {
       unapprovedDataFeed = await DataFeedOracleBase.new()
       await unapprovedDataFeed.initialize(root)
 
-      await oracleManagerApp.initialize(medianDataFeed.address)
-      await oracleManagerApp.addDataFeed(dataFeed1.address)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
     })
 
     it('decreases approvedDataFeedsLength by one', async () => {
-      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(1)
+      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(2)
       await oracleManagerApp.removeDataFeed(dataFeed1.address)
-      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(0)
+      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(1)
     })
 
     it('sets approvedDataFeeds mapping to false for dataFeed', async () => {
@@ -204,22 +189,43 @@ contract('OracleManagerApp', (accounts) => {
       expect(await oracleManagerApp.approvedDataFeeds(dataFeed1.address)).to.equal(false)
     })
 
-    it('remove the dataFeed from the medianDataFeed', async () => {
-      expect(await medianDataFeed.dataSources(dataFeed1.address)).to.equal(true)
-      await oracleManagerApp.removeDataFeed(dataFeed1.address)
-      expect(await medianDataFeed.dataSources(dataFeed1.address)).to.equal(false)
-    })
-
-    it('emits DataFeedRemoved event', async () => {
+    it('emits RemovedDataFeed event', async () => {
       const { logs } = await oracleManagerApp.removeDataFeed(dataFeed1.address)
-      expect(logs[0].event).to.equal('DataFeedRemoved')
-      expect(logs[0].args.dataFeedAddress).to.equal(dataFeed1.address)
+      expect(logs[0].event).to.equal('RemovedDataFeed')
+      expect(logs[0].args.dataFeed).to.equal(dataFeed1.address)
     })
 
     it('reverts if datafeed is not currently approved', async () => {
       return assertRevert(async () => {
         await oracleManagerApp.removeDataFeed(unapprovedDataFeed.address)
       })
+    })
+  })
+
+  describe('medianizeByIndices', () => {
+    beforeEach(async () => {
+      const timehop = 1000
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
+
+      await dataFeed1.setResult(uintToBytes32(5), (await latestTimestamp()) - 1)
+      await dataFeed2.setResult(uintToBytes32(7), (await latestTimestamp()) - 1)
+      await oracleManagerApp.setResult([dataFeed1.address, dataFeed2.address])
+
+      await increaseTime(timehop)
+
+      await dataFeed1.setResult(uintToBytes32(7), (await latestTimestamp()) - 1)
+      await dataFeed2.setResult(uintToBytes32(9), (await latestTimestamp()) - 1)
+      await oracleManagerApp.setResult([dataFeed1.address, dataFeed2.address])
+
+      await increaseTime(timehop)
+
+      await dataFeed1.setResult(uintToBytes32(9), (await latestTimestamp()) - 1)
+      await dataFeed2.setResult(uintToBytes32(11), (await latestTimestamp()) - 1)
+      await oracleManagerApp.setResult([dataFeed1.address, dataFeed2.address])
+    })
+
+    it('has correct TimeMedianDataFeed functionality', async () => {
+      expect(await oracleManagerApp.medianizeByIndices(1, 2)).to.equal(uintToBytes32(8))
     })
   })
 })
