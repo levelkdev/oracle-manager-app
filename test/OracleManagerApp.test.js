@@ -66,33 +66,30 @@ contract('OracleManagerApp', (accounts) => {
       })
     })
 
-    // TODO: Renable adding data feeds on initialize when
-    // https://github.com/aragon/aragon-cli/pull/623 is resolved
-    //
-    // it('sets the correct approvedDataFeedsLength', async () => {
-    //   await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
-    //   expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(2)
-    // })
-    //
-    // it('sets all dataFeeds to true in approvedDataFeeds mapping', async () => {
-    //   await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
-    //   expect(await oracleManagerApp.approvedDataFeeds(dataFeed1.address)).to.equal(true)
-    //   expect(await oracleManagerApp.approvedDataFeeds(dataFeed2.address)).to.equal(true)
-    // })
-    //
-    // it('emits DataFeedAdded events for initial dataFeeds', async () => {
-    //   const { logs } = await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], medianDataFeed.address)
-    //   expect(logs[0].event).to.equal('DataFeedAdded')
-    //   expect(logs[1].event).to.equal('DataFeedAdded')
-    //   expect(logs[0].args.dataFeedAddress).to.equal(dataFeed1.address)
-    //   expect(logs[1].args.dataFeedAddress).to.equal(dataFeed2.address)
-    // })
-    //
-    // it('reverts if duplicate dataFeeds are submitted', async () => {
-    //   return assertRevert(async () => {
-    //     await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address, dataFeed1.address], medianDataFeed.address)
-    //   })
-    // })
+    it('sets the correct approvedDataFeedsLength', async () => {
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
+      expect((await oracleManagerApp.approvedDataFeedsLength()).toNumber()).to.equal(2)
+    })
+
+    it('sets all dataFeeds to true in approvedDataFeeds mapping', async () => {
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
+      expect(await oracleManagerApp.approvedDataFeeds(dataFeed1.address)).to.equal(true)
+      expect(await oracleManagerApp.approvedDataFeeds(dataFeed2.address)).to.equal(true)
+    })
+
+    it('emits AddedDataFeed events for initial dataFeeds', async () => {
+      const { logs } = await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
+      expect(logs[0].event).to.equal('AddedDataFeed')
+      expect(logs[1].event).to.equal('AddedDataFeed')
+      expect(logs[0].args.dataFeed).to.equal(dataFeed1.address)
+      expect(logs[1].args.dataFeed).to.equal(dataFeed2.address)
+    })
+
+    it('reverts if duplicate dataFeeds are submitted', async () => {
+      return assertRevert(async () => {
+        await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address, dataFeed1.address], 0)
+      })
+    })
   })
 
   describe('setResult()', () => {
