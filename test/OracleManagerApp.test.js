@@ -55,14 +55,14 @@ contract('OracleManagerApp', (accounts) => {
 
   describe('initialize()', () => {
     it('initializes the contract', async () => {
-      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
       expect(await oracleManagerApp.hasInitialized()).to.equal(true)
     })
 
     it('reverts if called a second time', async () => {
-      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
       return assertRevert(async () => {
-        await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+        await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
       })
     })
 
@@ -102,7 +102,7 @@ contract('OracleManagerApp', (accounts) => {
       unapprovedDataFeed = await DataFeedOracleBase.new()
       await unapprovedDataFeed.initialize(root)
 
-      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
       await dataFeed1.setResult(uintToBytes32(5), unixTime() - 1)
       await dataFeed2.setResult(uintToBytes32(7), unixTime() - 1)
       await unapprovedDataFeed.setResult(uintToBytes32(9), unixTime() - 1)
@@ -139,7 +139,7 @@ contract('OracleManagerApp', (accounts) => {
       newlyApprovedDataFeed = await DataFeedOracleBase.new()
       await newlyApprovedDataFeed.initialize(root)
 
-      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
     })
 
     it('increases approvedDataFeedsLength by one', async () => {
@@ -174,7 +174,7 @@ contract('OracleManagerApp', (accounts) => {
       unapprovedDataFeed = await DataFeedOracleBase.new()
       await unapprovedDataFeed.initialize(root)
 
-      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
     })
 
     it('decreases approvedDataFeedsLength by one', async () => {
@@ -205,7 +205,7 @@ contract('OracleManagerApp', (accounts) => {
   describe('medianizeByIndices', () => {
     beforeEach(async () => {
       const timehop = 1000
-      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], root)
+      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
 
       await dataFeed1.setResult(uintToBytes32(5), (await latestTimestamp()) - 1)
       await dataFeed2.setResult(uintToBytes32(7), (await latestTimestamp()) - 1)

@@ -10,16 +10,26 @@ contract OracleManagerApp is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed
   event DataFeedAdded(address dataFeedAddress);
   event DataFeedRemoved(address dataFeedAddress);
 
+  modifier onlyDataSource() {
+    // overwrite and remove this permission functionality so that
+    // anyone can setResult()
+    // all other permissions are handled by Aragon's ACL
+    _;
+  }
+
   bytes32 public constant MANAGE_DATA_FEEDS = keccak256("MANAGE_DATA_FEEDS");
 
   /**
   * @dev Initializes OracleManagerApp
   */
-  function initialize(address[] _dataFeedSources, address  _dataSource)
+  function initialize(address[] _dataFeedSources, address _dataSource)
     public
   {
     initialized();
-    MedianDataFeedOracle.initialize(_dataFeedSources, _dataSource);
+    // require _dataSource is 0 address since parameter functionality is overridden
+    require(_dataSource == address(0));
+    // dataSource initialized with an arbitrary address, address(1), and will be unused in this implementation
+    MedianDataFeedOracle.initialize(_dataFeedSources, address(1));
   }
 
   /**
