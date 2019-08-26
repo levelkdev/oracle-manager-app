@@ -15,7 +15,7 @@ module.exports = async (
   const network = process.argv[5]
 
   try {
-    const MedianDataFeedMock = artifacts.require('MedianDataFeedMock')
+    const DataFeedOracleBase = artifacts.require('DataFeedOracleBase')
 
     let accounts
     if (!owner) {
@@ -25,17 +25,24 @@ module.exports = async (
 
     console.log(`owner: ${owner}`)
     console.log('')
-    
-    console.log(`Deploying MedianDataFeedMock...`)
-    const medianDataFeedMock = await MedianDataFeedMock.new()
-    console.log(`Deployed: ${medianDataFeedMock.address}`)
+
+    console.log(`Deploying DataFeedOracleBase1...`)
+    const dataFeedOracleBase1 = await DataFeedOracleBase.new()
+    await dataFeedOracleBase1.initialize(owner)
+    console.log(`Deployed: ${dataFeedOracleBase1.address}`)
+
+    console.log(`Deploying DataFeedOracleBase2...`)
+    const dataFeedOracleBase2 = await DataFeedOracleBase.new()
+    await dataFeedOracleBase2.initialize(owner)
+    console.log(`Deployed: ${dataFeedOracleBase2.address}`)
 
     const aragonRunArgs = [
       'run',
       'start:aragon:http',
       '--',
       '--app-init-args',
-      medianDataFeedMock.address
+      `["${dataFeedOracleBase1.address}", "${dataFeedOracleBase2.address}"]`,
+      "0x0000000000000000000000000000000000000000"
     ]
 
     console.log(`npm ${aragonRunArgs.join(' ')}`)

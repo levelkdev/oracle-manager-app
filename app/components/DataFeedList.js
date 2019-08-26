@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import {
   IdentityBadge,
   Table,
@@ -9,7 +10,7 @@ import {
   ContextMenuItem
 } from '@aragon/ui'
 
-const OracleList = ({ oracles, handleRemove }) => (
+const DataFeedList = ({ oracles, handleRemove }) => (
   <Table
     header={
       <TableRow>
@@ -33,4 +34,4 @@ const OracleList = ({ oracles, handleRemove }) => (
   </Table>
 )
 
-export default OracleList
+export default DataFeedList

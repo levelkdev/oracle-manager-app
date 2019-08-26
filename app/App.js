@@ -2,11 +2,11 @@ import React from 'react'
 import { Main, AppBar } from '@aragon/ui'
 import SidePanelDisplayContainer from './containers/SidePanelDisplayContainer'
 import ShowPanelButtonContainer from './containers/ShowPanelButtonContainer'
-import OracleListContainer from './containers/OracleListContainer'
+import DataFeedListContainer from './containers/DataFeedListContainer'
 
-const ShowAddOraclePanel = () => (
-  <ShowPanelButtonContainer panelName="addOracle">
-    Add Oracle
+const ShowAddDataFeedPanel = () => (
+  <ShowPanelButtonContainer panelName="addDataFeed">
+    Add DataFeed
   </ShowPanelButtonContainer>
 )
 
@@ -14,8 +14,8 @@ export default class App extends React.Component {
   render () {
     return (
       <Main>
-        <AppBar title="Oracles" endContent={<ShowAddOraclePanel />} />
-        <OracleListContainer />
+        <AppBar title="Data Feeds" endContent={<ShowAddDataFeedPanel />} />
+        <DataFeedListContainer />
         <SidePanelDisplayContainer />
       </Main>
     )

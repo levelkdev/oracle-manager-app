@@ -1,18 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { addOracle, hidePanel } from '../actions'
+import { addDataFeed, hidePanel } from '../actions'
 
-import AddOracleForm from '../components/AddOracleForm'
+import AddDataFeedForm from '../components/AddDataFeedForm'
 
 const mapStateToProps = state => ({
 
 })
 
 const mapDispatchToProps = dispatch => ({
-  addOracle: async values => {
+  addDataFeed: async values => {
     dispatch(hidePanel())
-    dispatch(addOracle({
+    dispatch(addDataFeed({
       address: values.address
     }))
   }
@@ -21,4 +21,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddOracleForm)
+)(AddDataFeedForm)
