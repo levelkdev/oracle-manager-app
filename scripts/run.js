@@ -15,7 +15,7 @@ module.exports = async (
   const network = process.argv[5]
 
   try {
-    const DataFeedOracleBase = artifacts.require('DataFeedOracleBase')
+    const TokenPriceDataFeedMock = artifacts.require('TokenPriceDataFeedMock')
 
     let accounts
     if (!owner) {
@@ -27,13 +27,21 @@ module.exports = async (
     console.log('')
 
     console.log(`Deploying DataFeedOracleBase1...`)
-    const dataFeedOracleBase1 = await DataFeedOracleBase.new()
-    await dataFeedOracleBase1.initialize(owner)
+    const dataFeedOracleBase1 = await TokenPriceDataFeedMock.new()
+    await dataFeedOracleBase1.initialize(
+      "0x0000000000000000000000000000000000000001",
+      "0x0000000000000000000000000000000000000002",
+      "0x0000000000000000000000000000000000000003"
+    )
     console.log(`Deployed: ${dataFeedOracleBase1.address}`)
 
     console.log(`Deploying DataFeedOracleBase2...`)
-    const dataFeedOracleBase2 = await DataFeedOracleBase.new()
-    await dataFeedOracleBase2.initialize(owner)
+    const dataFeedOracleBase2 = await TokenPriceDataFeedMock.new()
+    await dataFeedOracleBase2.initialize(
+      "0x0000000000000000000000000000000000000001",
+      "0x0000000000000000000000000000000000000002",
+      "0x0000000000000000000000000000000000000003"
+    )
     console.log(`Deployed: ${dataFeedOracleBase2.address}`)
 
     const aragonRunArgs = [

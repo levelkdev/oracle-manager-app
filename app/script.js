@@ -14,7 +14,7 @@ app.store((state, event) => {
 
   logDebug('app.store() EVENT: ', event)
 
-  if (!_.find(state.events, { transactionHash: event.transactionHash })) {
+  if (!_.find(state.events, { transactionHash: event.transactionHash, id: event.id })) {
     return {
       events: _.concat(state.events, event)
     }
