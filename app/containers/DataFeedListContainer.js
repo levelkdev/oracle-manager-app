@@ -4,7 +4,7 @@ import { removeDataFeed } from '../actions'
 import DataFeedList from '../components/DataFeedList'
 
 const mapStateToProps = (state) => ({
-  oracles: state.dataFeeds
+  dataFeeds: state.dataFeeds
 })
 
 const mapDispatchToProps = dispatch => ({

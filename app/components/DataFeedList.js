@@ -10,16 +10,18 @@ import {
   ContextMenuItem
 } from '@aragon/ui'
 
-const DataFeedList = ({ oracles, handleRemove }) => (
+const DataFeedList = ({ dataFeeds, handleRemove }) => (
   <Table
     header={
       <TableRow>
         <TableHeader title="Address" />
         <TableHeader title="Actions" />
+        <TableHeader title="Current Price" />
+        <TableHeader title="Last Updated" />
       </TableRow>
     }
   >
-    {oracles.map(({ address }) => (
+    {dataFeeds.map(({ address, currentResult, lastUpdated }) => (
       <TableRow key={address}>
         <TableCell>
           <IdentityBadge entity={address} />
@@ -28,6 +30,12 @@ const DataFeedList = ({ oracles, handleRemove }) => (
           <ContextMenu>
             <ContextMenuItem onClick={handleRemove.bind(this, { address })}>Remove</ContextMenuItem>
           </ContextMenu>
+        </TableCell>
+        <TableCell>
+          <IdentityBadge entity={currentResult} />
+        </TableCell>
+        <TableCell>
+          <IdentityBadge entity={lastUpdated} />
         </TableCell>
       </TableRow>
     ))}
