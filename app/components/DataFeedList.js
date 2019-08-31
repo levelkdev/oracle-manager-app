@@ -10,7 +10,7 @@ import {
   ContextMenuItem
 } from '@aragon/ui'
 
-const DataFeedList = ({ dataFeeds, handleRemove }) => (
+const DataFeedList = ({ dataFeeds, handleRemove, handleUpdate }) => (
   <Table
     header={
       <TableRow>
@@ -29,6 +29,7 @@ const DataFeedList = ({ dataFeeds, handleRemove }) => (
         <TableCell>
           <ContextMenu>
             <ContextMenuItem onClick={handleRemove.bind(this, { address })}>Remove</ContextMenuItem>
+            <ContextMenuItem onClick={handleUpdate.bind(this, { address })}>Update Price</ContextMenuItem>
           </ContextMenu>
         </TableCell>
         <TableCell>

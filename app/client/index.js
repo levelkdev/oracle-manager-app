@@ -31,6 +31,26 @@ export const removeDataFeed = async ({ address }) => {
   )
 }
 
+export const getDataFeedLatestResult = async ({ address }) => {
+  const tokenPriceDataFeed = await TokenPriceDataFeed(window.aragonClient, address)
+  const currentResult = await tokenPriceDataFeed.currentPrice()
+  const lastUpdated = await tokenPriceDataFeed.lastUpdated()
+
+  return {
+    currentResult,
+    lastUpdated
+  }
+}
+
+export const logDataFeedResult = async ({ address }) => {
+  return contractFn(
+    window.aragonClient,
+    'client',
+    'updateDataFeedResult',
+    address
+  )
+}
+
 export const accounts = async () => {
   return new Promise((resolve, reject) => {
     window.aragonClient.accounts().subscribe(
@@ -66,5 +86,6 @@ export default {
   latestBlock,
   addDataFeed,
   removeDataFeed,
-  getDataFeedLatestResult
+  getDataFeedLatestResult,
+  logDataFeedResult
 }

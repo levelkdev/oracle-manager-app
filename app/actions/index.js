@@ -28,6 +28,14 @@ export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => dispatch => {
   )
 }
 
+export const logDataFeedResult = ({ address }) => dispatch => {
+  return client.logDataFeedResult({ address }).then(
+    () => {
+      dispatch(fetchDataFeedLatestResult({ address }))
+    }
+  )
+}
+
 export const dataFeedLatestResultLoaded = ({ currentResult, lastUpdated, dataFeedAddress }) => ({
   type: 'DATA_FEED_LATEST_RESULT_LOADED',
   currentResult,
