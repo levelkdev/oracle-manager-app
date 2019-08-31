@@ -1,12 +1,12 @@
 pragma solidity >=0.4.24;
 
-import "../ITidbitDataFeedOracle.sol";
+import "../IDataFeed.sol";
 
 /**
  * @title MedianDataFeedMock
  * @dev Simplified data feed medianizer. !!LOCAL DEV ONLY!!
  */
-contract MedianDataFeedMock is ITidbitDataFeedOracle {
+contract MedianDataFeedMock is IDataFeed {
   function setResult(DataFeedOracleBase[] memory _dataFeeds) public {
 
   }
@@ -16,6 +16,6 @@ contract MedianDataFeedMock is ITidbitDataFeedOracle {
   }
 
   function removeDataFeed(DataFeedOracleBase dataFeed) public {
-    
+
   }
 }

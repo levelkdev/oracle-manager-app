@@ -3,7 +3,7 @@ pragma solidity >=0.4.24;
 import "@aragon/os/contracts/apps/AragonApp.sol";
 import 'tidbit/contracts/DataFeedOracles/MedianDataFeedOracle.sol';
 import 'token-price-oracles/contracts/DataFeeds/TimeMedianDataFeed.sol';
-import "./ITidbitDataFeedOracle.sol";
+import "./IDataFeed.sol";
 
 contract OracleManagerApp is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
 
@@ -52,5 +52,16 @@ contract OracleManagerApp is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed
     auth(MANAGE_DATA_FEEDS)
   {
     _removeDataFeed(dataFeed);
+  }
+
+  /**
+  * @dev logs results for given data feed. Needed because aragon apps cannot
+  *      perform transactions on external contracts
+  * @param dataFeed The dataFeed to be updated
+  */
+  function updateDataFeedResult(address dataFeed)
+    public
+  {
+    IDataFeed(dataFeed).logResult();
   }
 }
