@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import assert from 'assert'
 import dataFeeds from './dataFeeds'
 import uintToBytes32 from './computed/uintToBytes32'
@@ -60,36 +61,44 @@ describe('dataFeeds', () => {
 
     it('adds formatted current result information', async () => {
       const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated, currentResult }))
-      const dataFeed = (output.filter(dataFeedObj => { if (dataFeedObj.address == address) { return dataFeedObj } }))[0]
+      const dataFeed = _.find(output, { address })
       assert.deepEqual(dataFeed.currentResult, formatResult(currentResult, lastUpdated))
     })
 
     it('adds formatted lastUpdated information', async () => {
       const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated, currentResult }))
-      const dataFeed = (output.filter(dataFeedObj => { if (dataFeedObj.address == address) { return dataFeedObj } }))[0]
+      const dataFeed = _.find(output, { address })
+      const expected = formatDate(lastUpdated)
+      const actual = dataFeed.lastUpdated
 
-      assert.deepEqual(dataFeed.lastUpdated, formatDate(lastUpdated))
+      assert.deepEqual(actual, expected)
     })
 
     it('does not affect other dataFeeds', async () => {
       const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated, currentResult }))
-      const dataFeed = (output.filter(dataFeedObj => { if (dataFeedObj.address == mockAddr(0)) { return dataFeedObj } }))[0]
+      const dataFeed = _.find(output, { address: mockAddr(0) })
+      const expected = undefined
+      const actual = dataFeed.lastUpdated
 
-      assert.deepEqual(dataFeed.lastUpdated, undefined)
+      assert.deepEqual(actual, expected)
     })
 
     it('returns -- for current result if datafeed was never updated', async () => {
       const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated: nullLastUpdated, currentResult }))
-      const dataFeed = (output.filter(dataFeedObj => { if (dataFeedObj.address == address) { return dataFeedObj } }))[0]
+      const dataFeed = _.find(output, { address })
+      const expected = '--'
+      const actual = dataFeed.currentResult
 
-      assert.deepEqual(dataFeed.currentResult, '--')
+      assert.deepEqual(actual, expected)
     })
 
     it('returns -- for lastUpdated if datafeed was never updated', async () => {
       const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated: nullLastUpdated, currentResult }))
-      const dataFeed = (output.filter(dataFeedObj => { if (dataFeedObj.address == address) { return dataFeedObj } }))[0]
+      const dataFeed = _.find(output, { address })
+      const expected = '--'
+      const actual = dataFeed.lastUpdated
 
-      assert.deepEqual(dataFeed.lastUpdated, '--')
+      assert.deepEqual(actual, expected)
     })
   })
 })

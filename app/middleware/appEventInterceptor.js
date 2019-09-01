@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import {
   fetchDataFeedLatestResult
 } from '../actions'
@@ -9,7 +8,7 @@ const appEventInterceptor = store => next => action => {
   switch (action.type) {
     case 'ADDED_DATA_FEED_EVENT':
       store.dispatch(
-        fetchDataFeedLatestResult({address: action.returnValues.dataFeed })
+        fetchDataFeedLatestResult({dataFeedAddress: action.returnValues.dataFeed })
       )
       break
   }

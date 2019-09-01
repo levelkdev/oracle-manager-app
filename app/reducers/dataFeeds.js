@@ -18,7 +18,7 @@ const dataFeeds = (state = [], action) => {
       break
     case 'DATA_FEED_LATEST_RESULT_LOADED':
       returnState = state.map(dataFeed => {
-        if (dataFeed.address == action.address) {
+        if (dataFeed.address == action.dataFeedAddress) {
           dataFeed.currentResult = formatResult(action.currentResult, action.lastUpdated)
           dataFeed.lastUpdated = formatDate(action.lastUpdated)
         }

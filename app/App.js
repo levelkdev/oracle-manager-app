@@ -6,7 +6,7 @@ import DataFeedListContainer from './containers/DataFeedListContainer'
 
 const ShowAddDataFeedPanel = () => (
   <ShowPanelButtonContainer panelName="addDataFeed">
-    Add DataFeed
+    Add Data Feed
   </ShowPanelButtonContainer>
 )
 

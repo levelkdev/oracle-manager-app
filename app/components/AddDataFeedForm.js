@@ -15,7 +15,7 @@ const AddDataFeedForm = createReduxForm(({
         name="address"
         component="input"
         type="text"
-        placeholder="Enter an Oracle address"
+        placeholder="Enter a data feed address"
       />
       <br /><br />
       <Button mode="strong" type="submit" wide>Add Oracle</Button>
