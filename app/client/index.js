@@ -2,17 +2,6 @@ import { logDebug, logError } from '../util/logger'
 import contractFn from './contractFn'
 import TokenPriceDataFeed from './TokenPriceDataFeed'
 
-export const getDataFeedLatestResult = async ({ dataFeedAddress }) => {
-  const tokenPriceDataFeed = await TokenPriceDataFeed(window.aragonClient, dataFeedAddress)
-  const currentResult = await tokenPriceDataFeed.currentPrice()
-  const lastUpdated = await tokenPriceDataFeed.lastUpdated()
-
-  return {
-    currentResult,
-    lastUpdated
-  }
-}
-
 export const addDataFeed = async ({ address }) => {
   return contractFn(
     window.aragonClient,
@@ -31,8 +20,8 @@ export const removeDataFeed = async ({ address }) => {
   )
 }
 
-export const getDataFeedLatestResult = async ({ address }) => {
-  const tokenPriceDataFeed = await TokenPriceDataFeed(window.aragonClient, address)
+export const getDataFeedLatestResult = async ({ dataFeedAddress }) => {
+  const tokenPriceDataFeed = await TokenPriceDataFeed(window.aragonClient, dataFeedAddress)
   const currentResult = await tokenPriceDataFeed.currentPrice()
   const lastUpdated = await tokenPriceDataFeed.lastUpdated()
 
