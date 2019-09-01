@@ -8,6 +8,7 @@ import { Provider } from 'react-redux'
 import Aragon, { providers } from '@aragon/api'
 import { logDebug } from './util/logger'
 import { aragonReduxMiddleware, subscribeToAppState } from './aragonRedux/aragonRedux'
+import appEventInterceptor from './middleware/appEventInterceptor'
 import { fetchInitData } from './actions'
 import rootReducer from './reducers'
 import App from './App'
@@ -26,7 +27,8 @@ const store = createStore(
   rootReducer,
   applyMiddleware(
     thunk,
-    aragonReduxMiddleware
+    aragonReduxMiddleware,
+    appEventInterceptor
   )
 )
 

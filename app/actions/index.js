@@ -18,6 +18,23 @@ export const removeDataFeed = ({ address }) => dispatch => {
   })
 }
 
+export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => dispatch => {
+  return client.getDataFeedLatestResult({ dataFeedAddress }).then(
+    latestResults => {
+      const currentResult = latestResults.currentResult
+      const lastUpdated = latestResults.lastUpdated
+      dispatch(dataFeedLatestResultLoaded({ currentResult, lastUpdated, dataFeedAddress }))
+    }
+  )
+}
+
+export const dataFeedLatestResultLoaded = ({ currentResult, lastUpdated, dataFeedAddress }) => ({
+  type: 'DATA_FEED_LATEST_RESULT_LOADED',
+  currentResult,
+  lastUpdated,
+  dataFeedAddress
+})
+
 export const fetchInitData = () => async (dispatch) => {
   await Promise.all([
     dispatch(fetchAccounts()),

@@ -1,9 +1,9 @@
 import React from 'react'
 import { SidePanel } from '@aragon/ui'
-import AddOracle from '../views/AddOracle'
+import AddDataFeed from '../views/AddDataFeed'
 
 const titles = {
-  addOracle: 'Add an Oracle'
+  addDataFeed: 'Add an Oracle'
 }
 
 const SidePanelDisplay = ({ panelName, closePanel }) => (
@@ -14,8 +14,8 @@ const SidePanelDisplay = ({ panelName, closePanel }) => (
   >
     {(() => {
       switch (panelName) {
-        case 'addOracle':
-          return <AddOracle />
+        case 'addDataFeed':
+          return <AddDataFeed />
         default:
           return null
       }

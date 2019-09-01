@@ -5,17 +5,17 @@ import styled from 'styled-components'
 
 const createReduxForm = reduxForm({ form: 'createDecisionMarket' })
 
-const AddOracleForm = createReduxForm(({
+const AddDataFeedForm = createReduxForm(({
   handleSubmit,
-  addOracle
+  addDataFeed
 }) => {
   return (
-    <form onSubmit={handleSubmit(addOracle)}>
+    <form onSubmit={handleSubmit(addDataFeed)}>
       <StyledField
-        name="address" 
-        component="input" 
-        type="text" 
-        placeholder="Enter an Oracle address"
+        name="address"
+        component="input"
+        type="text"
+        placeholder="Enter a data feed address"
       />
       <br /><br />
       <Button mode="strong" type="submit" wide>Add Oracle</Button>
@@ -34,4 +34,4 @@ const StyledField = styled(Field)`
   ::placeholder { opacity: .5; }
 `
 
-export default AddOracleForm
+export default AddDataFeedForm

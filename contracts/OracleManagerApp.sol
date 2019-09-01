@@ -29,7 +29,7 @@ contract OracleManagerApp is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed
     // require _dataSource is 0 address since parameter functionality is overridden
     require(_dataSource == address(0));
     // dataSource initialized with an arbitrary address, address(1), and will be unused in this implementation
-    MedianDataFeedOracle.initialize(_dataFeedSources, address(1));
+    super.initialize(_dataFeedSources, address(1));
   }
 
   /**
