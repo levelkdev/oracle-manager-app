@@ -31,12 +31,13 @@ export const getDataFeedLatestResult = async ({ dataFeedAddress }) => {
   }
 }
 
-export const logDataFeedResult = async ({ address }) => {
+export const logDataFeedResult = async ({ dataFeedAddress }) => {
+  console.log('logDataFEedResult ', dataFeedAddress)
   return contractFn(
     window.aragonClient,
     'client',
     'updateDataFeedResult',
-    address
+    dataFeedAddress
   )
 }
 

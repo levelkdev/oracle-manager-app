@@ -8,12 +8,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  handleRemove: ({ address }) => {
-    dispatch(removeDataFeed({ address }))
+  handleRemove: ({ dataFeedAddress }) => {
+    dispatch(removeDataFeed({ dataFeedAddress }))
   },
-  handleUpdate: ({ address }) => {
-    console.log('here1')
-    dispatch(logDataFeedResult({ address }))
+  handleUpdate: ({ dataFeedAddress }) => {
+    dispatch(logDataFeedResult({ dataFeedAddress }))
   }
 })
 

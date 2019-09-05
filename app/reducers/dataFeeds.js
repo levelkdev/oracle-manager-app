@@ -8,17 +8,17 @@ const dataFeeds = (state = [], action) => {
     case 'ADDED_DATA_FEED_EVENT':
       returnState = _.uniqBy([
         ...state,
-        ...[{ address: action.returnValues.dataFeed }]
-      ], 'address')
+        ...[{ dataFeedAddress: action.returnValues.dataFeed }]
+      ], 'dataFeedAddress')
       break
     case 'REMOVED_DATA_FEED_EVENT':
       returnState = _.filter(state, dataFeed => (
-        dataFeed.address != action.returnValues.dataFeed
+        dataFeed.dataFeedAddress != action.returnValues.dataFeed
       ))
       break
     case 'DATA_FEED_LATEST_RESULT_LOADED':
       returnState = state.map(dataFeed => {
-        if (dataFeed.address == action.dataFeedAddress) {
+        if (dataFeed.dataFeedAddress == action.dataFeedAddress) {
           dataFeed.currentResult = formatResult(action.currentResult, action.lastUpdated)
           dataFeed.lastUpdated = formatDate(action.lastUpdated)
         }

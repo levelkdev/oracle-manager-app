@@ -28,10 +28,10 @@ export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => dispatch => {
   )
 }
 
-export const logDataFeedResult = ({ address }) => dispatch => {
-  return client.logDataFeedResult({ address }).then(
+export const logDataFeedResult = ({ dataFeedAddress }) => dispatch => {
+  return client.logDataFeedResult({ dataFeedAddress }).then(
     () => {
-      dispatch(fetchDataFeedLatestResult({ address }))
+      dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
     }
   )
 }

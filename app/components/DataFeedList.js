@@ -21,15 +21,15 @@ const DataFeedList = ({ dataFeeds, handleRemove, handleUpdate }) => (
       </TableRow>
     }
   >
-    {dataFeeds.map(({ address, currentResult, lastUpdated }) => (
-      <TableRow key={address}>
+    {dataFeeds.map(({ dataFeedAddress , currentResult, lastUpdated }) => (
+      <TableRow key={dataFeedAddress }>
         <TableCell>
-          <IdentityBadge entity={address} />
+          <IdentityBadge entity={dataFeedAddress } />
         </TableCell>
         <TableCell>
           <ContextMenu>
-            <ContextMenuItem onClick={handleRemove.bind(this, { address })}>Remove</ContextMenuItem>
-            <ContextMenuItem onClick={handleUpdate.bind(this, { address })}>Update Price</ContextMenuItem>
+            <ContextMenuItem onClick={handleRemove.bind(this, { dataFeedAddress })}>Remove</ContextMenuItem>
+            <ContextMenuItem onClick={handleUpdate.bind(this, { dataFeedAddress  })}>Update Price</ContextMenuItem>
           </ContextMenu>
         </TableCell>
         <TableCell>
