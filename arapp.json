@@ -6,7 +6,7 @@
       "params": []
     }
   ],
-  "path": "contracts/OracleManagerApp.sol",
+  "path": "contracts/OracleManager.sol",
   "environments": {
     "default": {
       "network": "rpc",

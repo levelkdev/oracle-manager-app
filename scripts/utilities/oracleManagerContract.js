@@ -1,6 +1,6 @@
-module.exports = async function oracleManagerAppContract (artifacts, daoAddress) {
+module.exports = async function oracleManagerContract (artifacts, daoAddress) {
   const Kernel = artifacts.require('Kernel')
-  const OracleManagerApp = artifacts.require('OracleManagerApp')
+  const OracleManager = artifacts.require('OracleManager')
 
   const dao = await Kernel.at(daoAddress)
 
@@ -16,7 +16,7 @@ module.exports = async function oracleManagerAppContract (artifacts, daoAddress)
         for (var i in evts) {
           const evt = evts[i]
           if (evt.returnValues.proxy) {
-            const app = await OracleManagerApp.at(evt.returnValues.proxy)
+            const app = await OracleManager.at(evt.returnValues.proxy)
             let medianDataFeed // using the `medianDataFeed` property to check if this
                               // is the right contract implementation
             try {

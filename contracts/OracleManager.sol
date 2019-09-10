@@ -5,7 +5,7 @@ import 'tidbit/contracts/DataFeedOracles/MedianDataFeedOracle.sol';
 import 'token-price-oracles/contracts/DataFeeds/TimeMedianDataFeed.sol';
 import "./IDataFeed.sol";
 
-contract OracleManagerApp is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
+contract OracleManager is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
 
   event DataFeedAdded(address dataFeedAddress);
   event DataFeedRemoved(address dataFeedAddress);
@@ -20,7 +20,7 @@ contract OracleManagerApp is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed
   bytes32 public constant MANAGE_DATA_FEEDS = keccak256("MANAGE_DATA_FEEDS");
 
   /**
-  * @dev Initializes OracleManagerApp
+  * @dev Initializes OracleManager
   */
   function initialize(address[] _dataFeedSources, address _dataSource)
     public

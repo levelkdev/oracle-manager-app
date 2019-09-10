@@ -1,4 +1,4 @@
-const oracleManagerAppContract = require('../utilities/oracleManagerAppContract')
+const oracleManagerContract = require('../utilities/oracleManagerContract')
 
 module.exports = async (callback) => {
   try {
@@ -14,7 +14,7 @@ module.exports = async (callback) => {
     console.log('seeding data...')
     console.log('')
 
-    const oracleManagerApp = await oracleManagerAppContract(artifacts, daoAddress)
+    const oracleManager = await oracleManagerContract(artifacts, daoAddress)
 
     const seedData = require('./data/data_' + dataFileId + '.json')
 
@@ -24,7 +24,7 @@ module.exports = async (callback) => {
         case 'addDataFeed':
           const { address } = data
           console.log(`Adding data feed ${address}`)
-          await oracleManagerApp.addDataFeed(address)
+          await oracleManager.addDataFeed(address)
           console.log(`Data feed added`)
           console.log(``)
           break
