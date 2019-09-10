@@ -3,7 +3,7 @@
  */
 
 const getAccounts = require('@aragon/os/scripts/helpers/get-accounts')
-const oracleManagerAppContract = require('./utilities/oracleManagerAppContract')
+const oracleManagerContract = require('./utilities/oracleManagerContract')
 const defaultOwner = process.env.OWNER
 
 const Kernel = artifacts.require('Kernel')
@@ -26,8 +26,8 @@ module.exports = async (
 
     const dao = await Kernel.at(daoAddress)
     const acl = await(ACL.at(await dao.acl()))
-    const oracleManagerApp = await oracleManagerAppContract(artifacts, daoAddress)
-    const MANAGE_DATA_FEEDS_ROLE = await oracleManagerApp.MANAGE_DATA_FEEDS()
+    const oracleManager = await oracleManagerContract(artifacts, daoAddress)
+    const MANAGE_DATA_FEEDS_ROLE = await oracleManager.MANAGE_DATA_FEEDS()
     
     console.log(`Granting MANAGE_DATA_FEEDS role to ${owner}...`)
     const tx = await acl.createPermission(owner, daoAddress, MANAGE_DATA_FEEDS_ROLE, owner)
