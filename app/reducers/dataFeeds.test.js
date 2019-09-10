@@ -50,24 +50,24 @@ describe('dataFeeds', () => {
   })
 
   describe('DATA_FEED_LATEST_RESULT_LOADED', () => {
-    let currentResult, lastUpdated, address, nullLastUpdated
+    let currentResult, lastUpdated, dataFeedAddress, nullLastUpdated
 
     beforeEach(async () => {
       nullLastUpdated = 0
       lastUpdated = Date.now()
       currentResult = uintToBytes32(123)
-      address = mockAddr(1)
+      dataFeedAddress = mockAddr(1)
     })
 
     it('adds formatted current result information', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated, currentResult }))
-      const dataFeed = _.find(output, { address })
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, currentResult }))
+      const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
       assert.deepEqual(dataFeed.currentResult, formatResult(currentResult, lastUpdated))
     })
 
     it('adds formatted lastUpdated information', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated, currentResult }))
-      const dataFeed = _.find(output, { address })
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, currentResult }))
+      const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
       const expected = formatDate(lastUpdated)
       const actual = dataFeed.lastUpdated
 
@@ -75,8 +75,8 @@ describe('dataFeeds', () => {
     })
 
     it('does not affect other dataFeeds', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated, currentResult }))
-      const dataFeed = _.find(output, { address: mockAddr(0) })
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, currentResult }))
+      const dataFeed = _.find(output, { dataFeedAddress: mockAddr(0) })
       const expected = undefined
       const actual = dataFeed.lastUpdated
 
@@ -84,8 +84,8 @@ describe('dataFeeds', () => {
     })
 
     it('returns -- for current result if datafeed was never updated', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated: nullLastUpdated, currentResult }))
-      const dataFeed = _.find(output, { address })
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, currentResult }))
+      const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
       const expected = '--'
       const actual = dataFeed.currentResult
 
@@ -93,8 +93,8 @@ describe('dataFeeds', () => {
     })
 
     it('returns -- for lastUpdated if datafeed was never updated', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ address, lastUpdated: nullLastUpdated, currentResult }))
-      const dataFeed = _.find(output, { address })
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, currentResult }))
+      const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
       const expected = '--'
       const actual = dataFeed.lastUpdated
 
@@ -103,23 +103,25 @@ describe('dataFeeds', () => {
   })
 })
 
-const mockDataFeed = i => ({ address: `mock_addr_${i}` })
+const mockDataFeed = i => ({ dataFeedAddress: `mock_addr_${i}` })
 
 const mockAddr = i => ( `mock_addr_${i}` )
 
-const dataFeedAddedAction = ({ address }) => ({
+const dataFeedAddedAction = ({ dataFeedAddress }) => {
+  return {
   type: 'ADDED_DATA_FEED_EVENT',
-  returnValues: { dataFeed: address }
-})
+  returnValues: { dataFeed: dataFeedAddress }
+  }
+}
 
-const dataFeedRemovedAction = ({ address }) => ({
-  type: 'REMOVED_DATA_FEED_EVENT',
-  returnValues: { dataFeed: address }
-})
+const dataFeedRemovedAction = ({ dataFeedAddress }) => {
+  return {type: 'REMOVED_DATA_FEED_EVENT',
+  returnValues: { dataFeed: dataFeedAddress }
+}}
 
-const dataFeedLatestResultLoaded = ({ address, currentResult, lastUpdated }) => ({
+const dataFeedLatestResultLoaded = ({ dataFeedAddress, currentResult, lastUpdated }) => ({
   type: 'DATA_FEED_LATEST_RESULT_LOADED',
-  address,
+  dataFeedAddress,
   currentResult,
   lastUpdated
 })

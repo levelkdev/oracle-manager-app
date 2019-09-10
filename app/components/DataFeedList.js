@@ -10,7 +10,7 @@ import {
   ContextMenuItem
 } from '@aragon/ui'
 
-const DataFeedList = ({ dataFeeds, handleRemove }) => (
+const DataFeedList = ({ dataFeeds, handleRemove, handleUpdate }) => (
   <Table
     header={
       <TableRow>
@@ -21,14 +21,15 @@ const DataFeedList = ({ dataFeeds, handleRemove }) => (
       </TableRow>
     }
   >
-    {dataFeeds.map(({ address, currentResult, lastUpdated }) => (
-      <TableRow key={address}>
+    {dataFeeds.map(({ dataFeedAddress , currentResult, lastUpdated }) => (
+      <TableRow key={dataFeedAddress }>
         <TableCell>
-          <IdentityBadge entity={address} />
+          <IdentityBadge entity={dataFeedAddress } />
         </TableCell>
         <TableCell>
           <ContextMenu>
-            <ContextMenuItem onClick={handleRemove.bind(this, { address })}>Remove</ContextMenuItem>
+            <ContextMenuItem onClick={handleRemove.bind(this, { dataFeedAddress })}>Remove</ContextMenuItem>
+            <ContextMenuItem onClick={handleUpdate.bind(this, { dataFeedAddress  })}>Update Price</ContextMenuItem>
           </ContextMenu>
         </TableCell>
         <TableCell>

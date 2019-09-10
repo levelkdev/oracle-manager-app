@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { removeDataFeed } from '../actions'
+import { removeDataFeed, logDataFeedResult } from '../actions'
 import DataFeedList from '../components/DataFeedList'
 
 const mapStateToProps = (state) => ({
@@ -8,8 +8,11 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  handleRemove: ({ address }) => {
-    dispatch(removeDataFeed({ address }))
+  handleRemove: ({ dataFeedAddress }) => {
+    dispatch(removeDataFeed({ dataFeedAddress }))
+  },
+  handleUpdate: ({ dataFeedAddress }) => {
+    dispatch(logDataFeedResult({ dataFeedAddress }))
   }
 })
 
