@@ -1,6 +1,19 @@
 import { logDebug, logError } from '../util/logger'
 import contractFn from './contractFn'
+import contractCall from './contractCall'
 import TokenPriceDataFeed from './TokenPriceDataFeed'
+
+export const call = async (functionName, ...params) => {
+  return contractCall(window.aragonClient, 'client', functionName, ...params)
+}
+
+export const getMedianDataFeedInfo = async () => {
+  return Promise.all([
+    call('contractAddress'),
+    call('latestResult'),
+    call('latestResultDate')
+  ])
+}
 
 export const addDataFeed = async ({ address }) => {
   return contractFn(
@@ -76,5 +89,6 @@ export default {
   addDataFeed,
   removeDataFeed,
   getDataFeedLatestResult,
+  getMedianDataFeedInfo,
   logDataFeedResult
 }

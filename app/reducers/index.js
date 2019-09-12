@@ -6,13 +6,15 @@ import initDataLoadStates from './initDataLoadStates'
 import initDataProps from './initDataProps'
 import sidePanel from './sidePanel'
 import dataFeeds from './dataFeeds'
+import medianDataFeed from './medianDataFeed'
 
 let reducers = {
   appEvents,
   initDataLoadStates,
   form,
   sidePanel,
-  dataFeeds
+  dataFeeds,
+  medianDataFeed
 }
 
 initDataProps.forEach(val => {
