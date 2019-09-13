@@ -53,6 +53,15 @@ export const logDataFeedResult = async ({ dataFeedAddress }) => {
   )
 }
 
+export const logMedianDataFeedResult = async (dataFeeds) => {
+  return contractFn(
+    window.aragonClient,
+    'client',
+    'setResult',
+    dataFeeds
+  )
+}
+
 export const accounts = async () => {
   return new Promise((resolve, reject) => {
     window.aragonClient.accounts().subscribe(
@@ -90,5 +99,6 @@ export default {
   removeDataFeed,
   getDataFeedLatestResult,
   getMedianDataFeedInfo,
-  logDataFeedResult
+  logDataFeedResult,
+  logMedianDataFeedResult
 }

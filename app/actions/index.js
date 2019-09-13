@@ -29,12 +29,14 @@ export const removeDataFeed = ({ address }) => dispatch => {
   })
 }
 
-export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => dispatch => {
+export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => (dispatch, getState) => {
   return client.getDataFeedLatestResult({ dataFeedAddress }).then(
     latestResults => {
       const currentResult = latestResults.currentResult
       const lastUpdated = latestResults.lastUpdated
-      dispatch(dataFeedLatestResultLoaded({ dataFeedAddress, currentResult, lastUpdated }))
+      getState().medianDataFeed.medianDataFeedAddress == dataFeedAddress ?
+        dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress: dataFeedAddress, currentResult, lastUpdated })) :
+        dispatch(dataFeedLatestResultLoaded({ dataFeedAddress, currentResult, lastUpdated }))
     }
   )
 }
@@ -47,8 +49,15 @@ export const logDataFeedResult = ({ dataFeedAddress }) => dispatch => {
   )
 }
 
-export const logMedianDataFeedResult = ({ dataFeedAddress }) => dispatch => {
-  // TODO
+export const logMedianDataFeedResult = ({ dataFeedAddress }) => (dispatch, getState) => {
+  let dataFeeds = getState().dataFeeds
+  _.map(dataFeeds, dataFeed => { dataFeed.currentResult = new Number(dataFeed.currentResult) })
+  dataFeeds = _.map(_.sortBy(dataFeeds, ['currentResult']), _.property('dataFeedAddress'))
+  return client.logMedianDataFeedResult(dataFeeds).then(
+    () => {
+      dispatch(fetchDataFeedLatestResult( { dataFeedAddress }))
+    }
+  )
 }
 
 export const dataFeedLatestResultLoaded = ({ currentResult, lastUpdated, dataFeedAddress }) => ({

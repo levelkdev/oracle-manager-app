@@ -4,6 +4,7 @@ contract TokenPriceDataFeedMock is DataFeedOracleBase {
   address public token1;
   address public token2;
   address public exchangeAdapter;
+  uint public price;
 
   function initialize(
     address _token1,
@@ -21,7 +22,10 @@ contract TokenPriceDataFeedMock is DataFeedOracleBase {
   }
 
   function logResult() public {
-    uint price = 5;
     DataFeedOracleBase(this).setResult(bytes32(price), uint256(block.timestamp));
+  }
+
+  function mock_setResult(uint num) public {
+    price = num * 10 ** 18;
   }
 }
