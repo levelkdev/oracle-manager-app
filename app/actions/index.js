@@ -47,6 +47,10 @@ export const logDataFeedResult = ({ dataFeedAddress }) => dispatch => {
   )
 }
 
+export const logMedianDataFeedResult = ({ dataFeedAddress }) => dispatch => {
+  // TODO
+}
+
 export const dataFeedLatestResultLoaded = ({ currentResult, lastUpdated, dataFeedAddress }) => ({
   type: 'DATA_FEED_LATEST_RESULT_LOADED',
   currentResult,

@@ -4,7 +4,8 @@ import { removeDataFeed, logDataFeedResult } from '../actions'
 import DataFeedList from '../components/DataFeedList'
 
 const mapStateToProps = (state) => ({
-  dataFeeds: state.dataFeeds
+  dataFeeds: state.dataFeeds,
+  title: 'Individual Data Feeds'
 })
 
 const mapDispatchToProps = dispatch => ({
