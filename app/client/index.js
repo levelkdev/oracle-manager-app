@@ -3,7 +3,7 @@ import contractFn from './contractFn'
 import contractCall from './contractCall'
 import TokenPriceDataFeed from './TokenPriceDataFeed'
 
-export const call = async (functionName, ...params) => {
+export const call = (functionName, ...params) => {
   return contractCall(window.aragonClient, 'client', functionName, ...params)
 }
 

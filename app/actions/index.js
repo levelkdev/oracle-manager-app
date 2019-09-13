@@ -2,7 +2,7 @@ import _ from 'lodash'
 import { logDebug, logError } from '../util/logger'
 import client from '../client'
 
-export const getMedianDataFeedInfo = () => dispatch => {
+export const fetchMedianDataFeedInfo = () => dispatch => {
   return client.getMedianDataFeedInfo().then(medianDataFeedInfo => {
     const medianDataFeedAddress = medianDataFeedInfo[0]
     const currentResult = medianDataFeedInfo[1]
@@ -68,7 +68,8 @@ export const medianDataFeedInfoLoaded = ({ medianDataFeedAddress, currentResult,
 export const fetchInitData = () => async (dispatch) => {
   await Promise.all([
     dispatch(fetchAccounts()),
-    dispatch(fetchLatestBlock())
+    dispatch(fetchLatestBlock()),
+    dispatch(fetchMedianDataFeedInfo())
   ])
 }
 

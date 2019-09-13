@@ -50,7 +50,6 @@ class ConnectedApp extends React.Component {
         window.location.reload();
       })
     }
-    store.dispatch(getMedianDataFeedInfo())
   }
   componentWillUnmount() {
     window.removeEventListener('message', this.handleWrapperMessage)
