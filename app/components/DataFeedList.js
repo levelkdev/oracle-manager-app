@@ -30,7 +30,7 @@ const DataFeedList = ({ dataFeeds = [], title, handleRemove, handleUpdate }) => 
             <IdentityBadge entity={ dataFeedAddress } />
           </TableCell>
           <TableCell>
-            {actionItems({ handleRemove, handleUpdate, dataFeedAddress })}
+            { actionItems({ handleRemove, handleUpdate, dataFeedAddress }) }
           </TableCell>
           <TableCell>
             <div> { currentResult } </div>

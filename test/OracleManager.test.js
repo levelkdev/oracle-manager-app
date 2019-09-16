@@ -201,11 +201,11 @@ contract('OracleManager', (accounts) => {
 
   describe('contractAddress()', () => {
     beforeEach(async () => {
-      await oracleManagerApp.initialize([dataFeed1.address, dataFeed2.address], 0)
+      await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
     })
 
     it('returns the contract address', async () => {
-      expect(await oracleManagerApp.contractAddress()).to.equal(oracleManagerApp.address)
+      expect(await oracleManager.contractAddress()).to.equal(oracleManager.address)
     })
   })
 
