@@ -38,6 +38,7 @@ module.exports = async (
       ADDRESS_2,
       ADDRESS_3
     )
+    await dataFeedOracleBase1.mock_setResult(7)
     console.log(`Deployed: ${dataFeedOracleBase1.address}`)
 
     console.log(`Deploying DataFeedOracleBase2...`)
@@ -47,6 +48,7 @@ module.exports = async (
       ADDRESS_2,
       ADDRESS_3
     )
+    await dataFeedOracleBase2.mock_setResult(5)
     console.log(`Deployed: ${dataFeedOracleBase2.address}`)
 
     const aragonRunArgs = [

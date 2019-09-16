@@ -6,6 +6,6 @@ module.exports = function bytes32ToNum(bytes32str) {
       bytes32str = bytes32str.substr(1)
     }
 
-    var bn = web3_utils.toDecimal('0x' + bytes32str, 16);
+    var bn = web3_utils.toBN('0x' + bytes32str, 16);
     return bn
 }

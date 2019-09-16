@@ -199,6 +199,16 @@ contract('OracleManager', (accounts) => {
     })
   })
 
+  describe('contractAddress()', () => {
+    beforeEach(async () => {
+      await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
+    })
+
+    it('returns the contract address', async () => {
+      expect(await oracleManager.contractAddress()).to.equal(oracleManager.address)
+    })
+  })
+
   describe('medianizeByIndices', () => {
     beforeEach(async () => {
       const timehop = 1000

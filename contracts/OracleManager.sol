@@ -64,4 +64,11 @@ contract OracleManager is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
   {
     IDataFeed(dataFeed).logResult();
   }
+
+  // Workaround solution to get the contract address. Would be better to get from
+  // Aragon client
+  function contractAddress() public view returns (address) {
+    return this;
+  }
+
 }

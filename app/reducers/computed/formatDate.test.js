@@ -10,6 +10,6 @@ describe('formatDate', () => {
 
   it('returns correct result for dataFeeds never updated', async () => {
     const date = 0
-    assert.deepEqual(formatDate(date), '--')
+    assert.deepEqual(formatDate(date), undefined)
   })
 })

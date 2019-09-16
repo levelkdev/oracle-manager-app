@@ -9,7 +9,7 @@ import Aragon, { providers } from '@aragon/api'
 import { logDebug } from './util/logger'
 import { aragonReduxMiddleware, subscribeToAppState } from './aragonRedux/aragonRedux'
 import appEventInterceptor from './middleware/appEventInterceptor'
-import { fetchInitData } from './actions'
+import { fetchInitData, getMedianDataFeedInfo } from './actions'
 import rootReducer from './reducers'
 import App from './App'
 
@@ -38,6 +38,7 @@ class ConnectedApp extends React.Component {
     observable: null,
     userAccount: '',
   }
+
   componentDidMount() {
     window.addEventListener('message', this.handleWrapperMessage)
 
