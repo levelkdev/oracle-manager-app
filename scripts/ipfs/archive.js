@@ -3,6 +3,7 @@
  */
 
 const fs = require('fs')
+const execa = require('execa')
 const readArappEnv = require('../deployConfig/readArappEnv')
 
 const environment = process.argv[2]
