@@ -34,9 +34,11 @@ export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => (dispatch, get
     latestResults => {
       const currentResult = latestResults.currentResult
       const lastUpdated = latestResults.lastUpdated
-      getState().medianDataFeed.medianDataFeedAddress == dataFeedAddress ?
-        dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress: dataFeedAddress, currentResult, lastUpdated })) :
+      if (getState().medianDataFeed.medianDataFeedAddress == dataFeedAddress) {
+        dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress: dataFeedAddress, currentResult, lastUpdated }))
+      } else {
         dispatch(dataFeedLatestResultLoaded({ dataFeedAddress, currentResult, lastUpdated }))
+      }
     }
   )
 }

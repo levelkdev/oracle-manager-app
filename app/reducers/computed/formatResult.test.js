@@ -11,7 +11,7 @@ describe('formatResult', () => {
 
   it('returns correct result for dataFeeds never updated', async () => {
     const date = 0
-    const result = uintToBytes32(5600 * 20 ** 18)
-    assert.equal(formatResult(result, date), '--')
+    const result = uintToBytes32(5600 * 10 ** 18)
+    assert.equal(formatResult(result, date), undefined)
   })
 })

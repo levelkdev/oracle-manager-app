@@ -33,10 +33,10 @@ const DataFeedList = ({ dataFeeds = [], title, handleRemove, handleUpdate }) => 
             { actionItems({ handleRemove, handleUpdate, dataFeedAddress }) }
           </TableCell>
           <TableCell>
-            <div> { currentResult } </div>
+            <div> { currentResult ? currentResult : '--'} </div>
           </TableCell>
           <TableCell>
-            <div> { lastUpdated } </div>
+            <div> { lastUpdated ? lastUpdated : '--'} </div>
           </TableCell>
         </TableRow>
       ))}

@@ -86,7 +86,7 @@ describe('dataFeeds', () => {
     it('returns -- for current result if datafeed was never updated', async () => {
       const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, currentResult }))
       const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
-      const expected = '--'
+      const expected = undefined
       const actual = dataFeed.currentResult
 
       assert.deepEqual(actual, expected)
@@ -95,7 +95,7 @@ describe('dataFeeds', () => {
     it('returns -- for lastUpdated if datafeed was never updated', async () => {
       const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, currentResult }))
       const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
-      const expected = '--'
+      const expected = undefined
       const actual = dataFeed.lastUpdated
 
       assert.deepEqual(actual, expected)

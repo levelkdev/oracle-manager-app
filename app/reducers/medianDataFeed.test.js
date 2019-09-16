@@ -30,7 +30,7 @@ describe('medianDataFeed', () => {
 
     it('adds the correctly formatted currenResult if the result has never been updated', () => {
       const actual = medianDataFeed({}, dataFeedLatestResultLoaded({ medianDataFeedAddress, currentResult, lastUpdated: 0 }))
-      const expected = '--'
+      const expected = undefined
       assert.deepEqual(actual.currentResult, expected)
     })
 
@@ -42,7 +42,7 @@ describe('medianDataFeed', () => {
 
     it('adds the correctly latsUpdated if the result has never been updated', () => {
       const actual = medianDataFeed({}, dataFeedLatestResultLoaded({ medianDataFeedAddress, currentResult, lastUpdated: 0 }))
-      const expected = '--'
+      const expected = undefined
       assert.deepEqual(actual.lastUpdated, expected)
     })
 
