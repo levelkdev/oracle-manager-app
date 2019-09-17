@@ -13,7 +13,7 @@ const mapDispatchToProps = dispatch => ({
   addDataFeed: async values => {
     dispatch(hidePanel())
     dispatch(addDataFeed({
-      address: values.address
+      dataFeedAddress: values.address
     }))
   }
 })

@@ -13,16 +13,16 @@ export const fetchMedianDataFeedInfo = () => dispatch => {
   })
 }
 
-export const addDataFeed = ({ address }) => dispatch => {
-  return client.addDataFeed({ address }).then(txHash => {
+export const addDataFeed = ({ dataFeedAddress }) => dispatch => {
+  return client.addDataFeed({ dataFeedAddress }).then(txHash => {
     logDebug(`client.addDataFeed: tx:`, txHash)
   }, err => {
     logError(`client.addDataFeed`, err)
   })
 }
 
-export const removeDataFeed = ({ address }) => dispatch => {
-  return client.removeDataFeed({ address }).then(txHash => {
+export const removeDataFeed = ({ dataFeedAddress }) => dispatch => {
+  return client.removeDataFeed({ dataFeedAddress }).then(txHash => {
     logDebug(`client.removeDataFeed: tx:`, txHash)
   }, err => {
     logError(`client.removeDataFeed`, err)
