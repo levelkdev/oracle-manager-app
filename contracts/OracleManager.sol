@@ -1,6 +1,7 @@
 pragma solidity >=0.4.24;
 
 import "@aragon/os/contracts/apps/AragonApp.sol";
+import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
 import 'tidbit/contracts/DataFeedOracles/MedianDataFeedOracle.sol';
 import 'token-price-oracles/contracts/DataFeeds/TimeMedianDataFeed.sol';
 import "./IDataFeed.sol";
@@ -52,6 +53,10 @@ contract OracleManager is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
     auth(MANAGE_DATA_FEEDS)
   {
     _removeDataFeed(dataFeed);
+  }
+
+  function setResult(DataFeedOracleBase[] _dataFeeds) public {
+    MedianDataFeedOracle.setResult(_dataFeeds);
   }
 
   /**
