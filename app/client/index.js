@@ -15,21 +15,21 @@ export const getMedianDataFeedInfo = async () => {
   ])
 }
 
-export const addDataFeed = async ({ address }) => {
+export const addDataFeed = async ({ dataFeedAddress }) => {
   return contractFn(
     window.aragonClient,
     'client',
     'addDataFeed',
-    address
+    dataFeedAddress
   )
 }
 
-export const removeDataFeed = async ({ address }) => {
+export const removeDataFeed = async ({ dataFeedAddress }) => {
   return contractFn(
     window.aragonClient,
     'client',
     'removeDataFeed',
-    address
+    dataFeedAddress
   )
 }
 
