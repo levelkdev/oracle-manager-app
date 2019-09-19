@@ -25,7 +25,7 @@ contract TokenPriceDataFeedMock is DataFeedOracleBase {
     DataFeedOracleBase(this).setResult(bytes32(price), uint256(block.timestamp));
   }
 
-  function viewCurrentResult() public view returns (bytes32) {
+  function viewlastUpdatedResult() public view returns (bytes32) {
     return bytes32(price);
   }
 

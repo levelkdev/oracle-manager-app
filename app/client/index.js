@@ -35,19 +35,19 @@ export const removeDataFeed = async ({ dataFeedAddress }) => {
 
 export const getDataFeedLatestResult = async ({ dataFeedAddress }) => {
   const iDataFeed = await IDataFeed(window.aragonClient, dataFeedAddress)
-  const currentResult = await iDataFeed.currentPrice()
+  const lastUpdatedResult = await iDataFeed.currentPrice()
   const lastUpdated = await iDataFeed.lastUpdated()
 
   return {
-    currentResult,
+    lastUpdatedResult,
     lastUpdated
   }
 }
 
-export const getDataFeedCurrentResult = async ({ dataFeedAddress }) => {
+export const getDataFeedlastUpdatedResult = async ({ dataFeedAddress }) => {
   const iDataFeed = await IDataFeed(window.aragonClient, dataFeedAddress)
-  const currentResult = await iDataFeed.viewCurrentResult()
-  return currentResult
+  const lastUpdatedResult = await iDataFeed.viewlastUpdatedResult()
+  return lastUpdatedResult
 }
 
 export const logDataFeedResult = async ({ dataFeedAddress }) => {
@@ -114,7 +114,7 @@ export default {
   removeDataFeed,
   getDataFeedLatestResult,
   getMedianDataFeedInfo,
-  getDataFeedCurrentResult,
+  getDataFeedlastUpdatedResult,
   logDataFeedResult,
   logMedianDataFeedResult,
   updateAllDataFeeds

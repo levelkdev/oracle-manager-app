@@ -50,23 +50,23 @@ describe('dataFeeds', () => {
   })
 
   describe('DATA_FEED_LATEST_RESULT_LOADED', () => {
-    let currentResult, lastUpdated, dataFeedAddress, nullLastUpdated
+    let lastUpdatedResult, lastUpdated, dataFeedAddress, nullLastUpdated
 
     beforeEach(async () => {
       nullLastUpdated = 0
       lastUpdated = Date.now()
-      currentResult = uintToBytes32(123)
+      lastUpdatedResult = uintToBytes32(123)
       dataFeedAddress = mockAddr(1)
     })
 
     it('adds formatted current result information', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, currentResult }))
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, lastUpdatedResult }))
       const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
-      assert.deepEqual(dataFeed.currentResult, formatResult(currentResult, lastUpdated))
+      assert.deepEqual(dataFeed.lastUpdatedResult, formatResult(lastUpdatedResult, lastUpdated))
     })
 
     it('adds formatted lastUpdated information', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, currentResult }))
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, lastUpdatedResult }))
       const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
       const expected = formatDate(lastUpdated)
       const actual = dataFeed.lastUpdated
@@ -75,7 +75,7 @@ describe('dataFeeds', () => {
     })
 
     it('does not affect other dataFeeds', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, currentResult }))
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated, lastUpdatedResult }))
       const dataFeed = _.find(output, { dataFeedAddress: mockAddr(0) })
       const expected = undefined
       const actual = dataFeed.lastUpdated
@@ -84,16 +84,16 @@ describe('dataFeeds', () => {
     })
 
     it('returns -- for current result if datafeed was never updated', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, currentResult }))
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, lastUpdatedResult }))
       const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
       const expected = undefined
-      const actual = dataFeed.currentResult
+      const actual = dataFeed.lastUpdatedResult
 
       assert.deepEqual(actual, expected)
     })
 
     it('returns -- for lastUpdated if datafeed was never updated', async () => {
-      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, currentResult }))
+      const output = dataFeeds([mockDataFeed(0), mockDataFeed(1)], dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdated: nullLastUpdated, lastUpdatedResult }))
       const dataFeed = _.find(output, { dataFeedAddress: dataFeedAddress })
       const expected = undefined
       const actual = dataFeed.lastUpdated
@@ -119,9 +119,9 @@ const dataFeedRemovedAction = ({ dataFeedAddress }) => {
   returnValues: { dataFeed: dataFeedAddress }
 }}
 
-const dataFeedLatestResultLoaded = ({ dataFeedAddress, currentResult, lastUpdated }) => ({
+const dataFeedLatestResultLoaded = ({ dataFeedAddress, lastUpdatedResult, lastUpdated }) => ({
   type: 'DATA_FEED_LATEST_RESULT_LOADED',
   dataFeedAddress,
-  currentResult,
+  lastUpdatedResult,
   lastUpdated
 })

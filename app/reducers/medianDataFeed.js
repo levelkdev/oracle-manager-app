@@ -7,7 +7,7 @@ const medianDataFeed = (state = {}, action) => {
     case 'MEDIAN_DATA_FEED_INFO_LOADED':
       returnState = {
         medianDataFeedAddress: action.medianDataFeedAddress,
-        currentResult: formatResult(action.currentResult, action.lastUpdated),
+        lastUpdatedResult: formatResult(action.lastUpdatedResult, action.lastUpdated),
         lastUpdated: formatDate(action.lastUpdated)
       }
       break

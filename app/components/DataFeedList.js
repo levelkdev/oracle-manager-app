@@ -24,7 +24,7 @@ const DataFeedList = ({ dataFeeds = [], title, handleRemove, handleUpdate }) => 
         </TableRow>
       }
     >
-      {dataFeeds.map(({ dataFeedAddress, currentResult, lastUpdated }) => (
+      {dataFeeds.map(({ dataFeedAddress, lastUpdatedResult, lastUpdated }) => (
         <TableRow key={ dataFeedAddress }>
           <TableCell>
             <IdentityBadge entity={ dataFeedAddress } />
@@ -33,7 +33,7 @@ const DataFeedList = ({ dataFeeds = [], title, handleRemove, handleUpdate }) => 
             { actionItems({ handleRemove, handleUpdate, dataFeedAddress }) }
           </TableCell>
           <TableCell>
-            <div> { currentResult ? currentResult : '--'} </div>
+            <div> { lastUpdatedResult ? lastUpdatedResult : '--'} </div>
           </TableCell>
           <TableCell>
             <div> { lastUpdated ? lastUpdated : '--'} </div>

@@ -75,11 +75,11 @@ contract OracleManager is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
     IDataFeed(dataFeed).logResult();
   }
 
-  function viewCurrentResult(address dataFeed)
+  function viewlastUpdatedResult(address dataFeed)
     public
     view
   {
-    IDataFeed(dataFeed).viewCurrentResult();
+    IDataFeed(dataFeed).viewlastUpdatedResult();
   }
 
   /**

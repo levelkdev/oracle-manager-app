@@ -16,8 +16,8 @@ export default (aragonClient, address) => {
       const result = await contractFn(iDataFeed, contractName, 'latestResultDate')
       return result
     },
-    viewCurrentResult: async () => {
-      const result = await contractFn(iDataFeed, contractName, 'viewCurrentResult')
+    viewlastUpdatedResult: async () => {
+      const result = await contractFn(iDataFeed, contractName, 'viewlastUpdatedResult')
       return result
     }
   }
