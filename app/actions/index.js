@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { logDebug, logError } from '../util/logger'
+import bytes32ToNum from '../reducers/computed/bytes32ToNum'
 import client from '../client'
 
 export const fetchMedianDataFeedInfo = () => dispatch => {
@@ -60,6 +61,25 @@ export const logMedianDataFeedResult = ({ dataFeedAddress }) => (dispatch, getSt
       dispatch(fetchDataFeedLatestResult( { dataFeedAddress }))
     }
   )
+}
+
+export const updateAllDataFeeds = ({ dataFeedAddrs, medianDataFeedAddress }) => (dispatch, getState) => {
+
+
+  let orderedDataFeeds = _.sortBy(dataFeedAddrs, async (dataFeedAddress) => {
+    let result = await client.getDataFeedCurrentResult({ dataFeedAddress })
+    result = bytes32ToNum(result) / 10 ** 18
+    return result
+  })
+
+  // return client.updateAllDataFeeds({ dataFeedAddrs }).then(
+  //   () => {
+  //     for (datafeedAddress of dataFeedAddrs) {
+  //       dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
+  //     }
+  //     dispatch(fetchDataFeedLatestResult({ medianDataFeedAddress }))
+  //   }
+  // )
 }
 
 export const dataFeedLatestResultLoaded = ({ currentResult, lastUpdated, dataFeedAddress }) => ({
