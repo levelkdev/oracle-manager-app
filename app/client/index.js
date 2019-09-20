@@ -37,10 +37,12 @@ export const getDataFeedLatestResult = async ({ dataFeedAddress }) => {
   const iDataFeed = await IDataFeed(window.aragonClient, dataFeedAddress)
   const lastUpdatedResult = await iDataFeed.currentPrice()
   const lastUpdated = await iDataFeed.lastUpdated()
+  const currentResult = await iDataFeed.viewCurrentResult()
 
   return {
     lastUpdatedResult,
-    lastUpdated
+    lastUpdated,
+    currentResult
   }
 }
 

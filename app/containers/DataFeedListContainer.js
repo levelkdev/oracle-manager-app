@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import { removeDataFeed, logDataFeedResult } from '../actions'
 import DataFeedList from '../components/DataFeedList'
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state) => {
+  return {
   dataFeeds: state.dataFeeds,
   title: 'Individual Data Feeds'
-})
+}}
 
 const mapDispatchToProps = dispatch => ({
   handleRemove: ({ dataFeedAddress }) => {

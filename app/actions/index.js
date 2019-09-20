@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { logDebug, logError } from '../util/logger'
-import bytes32ToNum from '../reducers/computed/bytes32ToNum'
 import client from '../client'
 
 export const fetchMedianDataFeedInfo = () => dispatch => {
@@ -35,10 +34,11 @@ export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => (dispatch, get
     latestResults => {
       const lastUpdatedResult = latestResults.lastUpdatedResult
       const lastUpdated = latestResults.lastUpdated
+      const currentResult = latestResults.currentResult
       if (getState().medianDataFeed.medianDataFeedAddress == dataFeedAddress) {
         dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress: dataFeedAddress, lastUpdatedResult, lastUpdated }))
       } else {
-        dispatch(dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdatedResult, lastUpdated }))
+        dispatch(dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdatedResult, lastUpdated, currentResult }))
       }
     }
   )
@@ -64,29 +64,37 @@ export const logMedianDataFeedResult = ({ dataFeedAddress }) => (dispatch, getSt
 }
 
 export const updateAllDataFeeds = ({ dataFeedAddrs, medianDataFeedAddress }) => (dispatch, getState) => {
-
-
-  let orderedDataFeeds = _.sortBy(dataFeedAddrs, async (dataFeedAddress) => {
-    let result = await client.getDataFeedlastUpdatedResult({ dataFeedAddress })
-    result = bytes32ToNum(result) / 10 ** 18
-    return result
-  })
-
-  // return client.updateAllDataFeeds({ dataFeedAddrs }).then(
-  //   () => {
-  //     for (datafeedAddress of dataFeedAddrs) {
-  //       dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
-  //     }
-  //     dispatch(fetchDataFeedLatestResult({ medianDataFeedAddress }))
-  //   }
-  // )
+  return Promise.all(
+    _.map(dataFeedAddrs, dataFeedAddress => {
+      return dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
+    })
+  ).then(
+    () => {
+      dispatch(updateAll())
+    }
+  )
 }
 
-export const dataFeedLatestResultLoaded = ({ lastUpdatedResult, lastUpdated, dataFeedAddress }) => ({
+export const updateAll = () => (dispatch, getState) => {
+  let dataFeeds = getState().dataFeeds
+  _.map(dataFeeds, dataFeed => { dataFeed.currentResult = new Number(dataFeed.currentResult) })
+  dataFeeds = _.map(_.sortBy(dataFeeds, ['currentResult']), _.property('dataFeedAddress'))
+  return client.updateAllDataFeeds({ dataFeedAddrs: dataFeeds }).then(
+    () => {
+      for (let dataFeedAddress of dataFeeds) {
+        dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
+      }
+      dispatch(fetchMedianDataFeedInfo())
+    }
+  )
+}
+
+export const dataFeedLatestResultLoaded = ({ lastUpdatedResult, lastUpdated, dataFeedAddress, currentResult }) => ({
   type: 'DATA_FEED_LATEST_RESULT_LOADED',
   lastUpdatedResult,
   lastUpdated,
-  dataFeedAddress
+  dataFeedAddress,
+  currentResult
 })
 
 export const medianDataFeedInfoLoaded = ({ medianDataFeedAddress, lastUpdatedResult, lastUpdated }) => {
@@ -140,7 +148,6 @@ function propFetchDispatcher (prop) {
     return client[prop]().then(
       propValue => dispatch(propValueLoaded({ prop, value: propValue })),
       errorMessage => {
-        console.error(errorMessage)
         return dispatch(propValueLoadingError({ prop, errorMessage }))
       }
     )

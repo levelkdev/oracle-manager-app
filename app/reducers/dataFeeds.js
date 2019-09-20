@@ -21,6 +21,7 @@ const dataFeeds = (state = [], action) => {
         if (dataFeed.dataFeedAddress == action.dataFeedAddress) {
           dataFeed.lastUpdatedResult = formatResult(action.lastUpdatedResult, action.lastUpdated)
           dataFeed.lastUpdated = formatDate(action.lastUpdated)
+          dataFeed.currentResult = formatResult(action.currentResult, 1)
         }
         return dataFeed
       })

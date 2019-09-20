@@ -2,7 +2,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "viewlastUpdatedResult",
+    "name": "viewCurrentResult",
     "outputs": [
       {
         "name": "",
