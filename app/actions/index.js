@@ -63,28 +63,24 @@ export const logMedianDataFeedResult = ({ dataFeedAddress }) => (dispatch, getSt
   )
 }
 
-export const updateAllDataFeeds = ({ dataFeedAddrs, medianDataFeedAddress }) => (dispatch, getState) => {
+export const updateAllDataFeeds = ({ dataFeedAddrs }) => (dispatch, getState) => {
   return Promise.all(
     _.map(dataFeedAddrs, dataFeedAddress => {
       return dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
     })
   ).then(
     () => {
-      dispatch(updateAll())
-    }
-  )
-}
-
-export const updateAll = () => (dispatch, getState) => {
-  let dataFeeds = getState().dataFeeds
-  _.map(dataFeeds, dataFeed => { dataFeed.currentResult = new Number(dataFeed.currentResult) })
-  dataFeeds = _.map(_.sortBy(dataFeeds, ['currentResult']), _.property('dataFeedAddress'))
-  return client.updateAllDataFeeds({ dataFeedAddrs: dataFeeds }).then(
-    () => {
-      for (let dataFeedAddress of dataFeeds) {
-        dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
-      }
-      dispatch(fetchMedianDataFeedInfo())
+      let dataFeeds = getState().dataFeeds
+      _.map(dataFeeds, dataFeed => { dataFeed.currentResult = new Number(dataFeed.currentResult) })
+      dataFeeds = _.map(_.sortBy(dataFeeds, ['currentResult']), _.property('dataFeedAddress'))
+      return client.updateAllDataFeeds({ dataFeedAddrs: dataFeeds }).then(
+        () => {
+          for (let dataFeedAddress of dataFeeds) {
+            dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
+          }
+          dispatch(fetchMedianDataFeedInfo())
+        }
+      )
     }
   )
 }

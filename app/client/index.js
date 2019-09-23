@@ -46,12 +46,6 @@ export const getDataFeedLatestResult = async ({ dataFeedAddress }) => {
   }
 }
 
-export const getDataFeedlastUpdatedResult = async ({ dataFeedAddress }) => {
-  const iDataFeed = await IDataFeed(window.aragonClient, dataFeedAddress)
-  const lastUpdatedResult = await iDataFeed.viewlastUpdatedResult()
-  return lastUpdatedResult
-}
-
 export const logDataFeedResult = async ({ dataFeedAddress }) => {
   return contractFn(
     window.aragonClient,
@@ -116,7 +110,6 @@ export default {
   removeDataFeed,
   getDataFeedLatestResult,
   getMedianDataFeedInfo,
-  getDataFeedlastUpdatedResult,
   logDataFeedResult,
   logMedianDataFeedResult,
   updateAllDataFeeds

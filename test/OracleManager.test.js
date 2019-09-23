@@ -200,14 +200,25 @@ contract('OracleManager', (accounts) => {
   describe('updateAll()', () => {
     beforeEach(async () => {
       await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
+      await setDataFeedResult(dataFeed1, 5)
+      await setDataFeedResult(dataFeed2, 7)
+      await oracleManager.setResult([dataFeed1.address, dataFeed2.address])
       await dataFeed1.mock_setResult(5)
-      await dataFeed2.mock_setResult(7)
+      await dataFeed2.mock_setResult(10)
     })
 
-    it('returns the contract address', async () => {
-      expect(await oracleManager.latestResult()).to.equal(uintToBytes32(0))
+    it('updates approved data feeds', async () => {
+      await increaseTime(1000)
       await oracleManager.updateAll([dataFeed1.address, dataFeed2.address])
+      expect(await dataFeed1.latestResult()).to.equal(uintToBytes32(5 * 10 ** 18))
+      expect(await dataFeed2.latestResult()).to.equal(uintToBytes32(10 * 10 ** 18))
+    })
+
+    it('updates medianDataFeed', async () => {
       expect(await oracleManager.latestResult()).to.equal(uintToBytes32(6 * 10 ** 18))
+      await increaseTime(1000)
+      await oracleManager.updateAll([dataFeed1.address, dataFeed2.address])
+      expect(await oracleManager.latestResult()).to.equal(uintToBytes32(7.5 * 10 ** 18))
     })
   })
 

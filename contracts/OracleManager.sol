@@ -75,6 +75,11 @@ contract OracleManager is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
     IDataFeed(dataFeed).logResult();
   }
 
+  /**
+  * @dev returns current result from dataFeed regardless of when it was last updated
+  * @param dataFeed The dataFeeds to be updated
+  * @return current value of data feed result in bytes32
+  */
   function viewCurrentResult(address dataFeed)
     public
     view

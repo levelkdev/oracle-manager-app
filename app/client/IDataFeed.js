@@ -4,20 +4,20 @@ import contractFn from './contractFn'
 const contractName = 'iDataFeed'
 
 export default (aragonClient, address) => {
-  const iDataFeed = aragonClient.external(address, abi)
+  const dataFeed = aragonClient.external(address, abi)
 
   return {
-    ...iDataFeed,
+    ...dataFeed,
     currentPrice: async () => {
-      const result = await contractFn(iDataFeed, contractName, 'latestResult')
+      const result = await contractFn(dataFeed, contractName, 'latestResult')
       return result
     },
     lastUpdated: async () => {
-      const result = await contractFn(iDataFeed, contractName, 'latestResultDate')
+      const result = await contractFn(dataFeed, contractName, 'latestResultDate')
       return result
     },
     viewCurrentResult: async () => {
-      const result = await contractFn(iDataFeed, contractName, 'viewCurrentResult')
+      const result = await contractFn(dataFeed, contractName, 'viewCurrentResult')
       return result
     }
   }
