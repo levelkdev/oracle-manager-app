@@ -2,12 +2,12 @@
   "uniswapAdapter": "0xb44ccaf7c34b6ded40922d4e5156cf7f5432a33a",
   "uniswapFactory": "0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36",
   "tokens": {
-    "ANT": "0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85",
+    "MKR": "0xF9bA5210F91D0474bd1e1DcDAeC4C58E359AaD85",
     "DAI": "0x2448eE2641d78CC42D7AD76498917359D961A783"
   },
   "dataFeeds": {
     "uniswap": {
-      "ANT_DAI": "0x706b50670c80339b6a8a0d6e3b95952d8afc2234"
+      "MKR_DAI": "0x706b50670c80339b6a8a0d6e3b95952d8afc2234"
     }
   }
 }
