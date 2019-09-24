@@ -5,9 +5,9 @@ import client from '../client'
 export const fetchMedianDataFeedInfo = () => dispatch => {
   return client.getMedianDataFeedInfo().then(medianDataFeedInfo => {
     const medianDataFeedAddress = medianDataFeedInfo[0]
-    const currentResult = medianDataFeedInfo[1]
+    const lastUpdatedResult = medianDataFeedInfo[1]
     const lastUpdated = medianDataFeedInfo[2]
-    dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress, currentResult, lastUpdated }))
+    dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress, lastUpdatedResult, lastUpdated }))
   }, err => {
     logError(`client.getMedianDataFeedAddress`, err)
   })
@@ -32,12 +32,13 @@ export const removeDataFeed = ({ dataFeedAddress }) => dispatch => {
 export const fetchDataFeedLatestResult = ({ dataFeedAddress }) => (dispatch, getState) => {
   return client.getDataFeedLatestResult({ dataFeedAddress }).then(
     latestResults => {
-      const currentResult = latestResults.currentResult
+      const lastUpdatedResult = latestResults.lastUpdatedResult
       const lastUpdated = latestResults.lastUpdated
+      const currentResult = latestResults.currentResult
       if (getState().medianDataFeed.medianDataFeedAddress == dataFeedAddress) {
-        dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress: dataFeedAddress, currentResult, lastUpdated }))
+        dispatch(medianDataFeedInfoLoaded({ medianDataFeedAddress: dataFeedAddress, lastUpdatedResult, lastUpdated }))
       } else {
-        dispatch(dataFeedLatestResultLoaded({ dataFeedAddress, currentResult, lastUpdated }))
+        dispatch(dataFeedLatestResultLoaded({ dataFeedAddress, lastUpdatedResult, lastUpdated, currentResult }))
       }
     }
   )
@@ -53,8 +54,8 @@ export const logDataFeedResult = ({ dataFeedAddress }) => dispatch => {
 
 export const logMedianDataFeedResult = ({ dataFeedAddress }) => (dispatch, getState) => {
   let dataFeeds = getState().dataFeeds
-  _.map(dataFeeds, dataFeed => { dataFeed.currentResult = new Number(dataFeed.currentResult) })
-  dataFeeds = _.map(_.sortBy(dataFeeds, ['currentResult']), _.property('dataFeedAddress'))
+  _.map(dataFeeds, dataFeed => { dataFeed.lastUpdatedResult = new Number(dataFeed.lastUpdatedResult) })
+  dataFeeds = _.map(_.sortBy(dataFeeds, ['lastUpdatedResult']), _.property('dataFeedAddress'))
   return client.logMedianDataFeedResult(dataFeeds).then(
     () => {
       dispatch(fetchDataFeedLatestResult( { dataFeedAddress }))
@@ -62,18 +63,41 @@ export const logMedianDataFeedResult = ({ dataFeedAddress }) => (dispatch, getSt
   )
 }
 
-export const dataFeedLatestResultLoaded = ({ currentResult, lastUpdated, dataFeedAddress }) => ({
+export const updateAllDataFeeds = ({ dataFeedAddrs }) => (dispatch, getState) => {
+  return Promise.all(
+    _.map(dataFeedAddrs, dataFeedAddress => {
+      return dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
+    })
+  ).then(
+    () => {
+      let dataFeeds = getState().dataFeeds
+      _.map(dataFeeds, dataFeed => { dataFeed.currentResult = new Number(dataFeed.currentResult) })
+      dataFeeds = _.map(_.sortBy(dataFeeds, ['currentResult']), _.property('dataFeedAddress'))
+      return client.updateAllDataFeeds({ dataFeedAddrs: dataFeeds }).then(
+        () => {
+          for (let dataFeedAddress of dataFeeds) {
+            dispatch(fetchDataFeedLatestResult({ dataFeedAddress }))
+          }
+          dispatch(fetchMedianDataFeedInfo())
+        }
+      )
+    }
+  )
+}
+
+export const dataFeedLatestResultLoaded = ({ lastUpdatedResult, lastUpdated, dataFeedAddress, currentResult }) => ({
   type: 'DATA_FEED_LATEST_RESULT_LOADED',
-  currentResult,
+  lastUpdatedResult,
   lastUpdated,
-  dataFeedAddress
+  dataFeedAddress,
+  currentResult
 })
 
-export const medianDataFeedInfoLoaded = ({ medianDataFeedAddress, currentResult, lastUpdated }) => {
+export const medianDataFeedInfoLoaded = ({ medianDataFeedAddress, lastUpdatedResult, lastUpdated }) => {
   let action =  {
     type: 'MEDIAN_DATA_FEED_INFO_LOADED',
     medianDataFeedAddress,
-    currentResult,
+    lastUpdatedResult,
     lastUpdated
   }
   return action
@@ -120,7 +144,6 @@ function propFetchDispatcher (prop) {
     return client[prop]().then(
       propValue => dispatch(propValueLoaded({ prop, value: propValue })),
       errorMessage => {
-        console.error(errorMessage)
         return dispatch(propValueLoadingError({ prop, errorMessage }))
       }
     )

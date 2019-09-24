@@ -1,7 +1,7 @@
 import { logDebug, logError } from '../util/logger'
 import contractFn from './contractFn'
 import contractCall from './contractCall'
-import TokenPriceDataFeed from './TokenPriceDataFeed'
+import IDataFeed from './IDataFeed'
 
 export const call = (functionName, ...params) => {
   return contractCall(window.aragonClient, 'client', functionName, ...params)
@@ -34,13 +34,15 @@ export const removeDataFeed = async ({ dataFeedAddress }) => {
 }
 
 export const getDataFeedLatestResult = async ({ dataFeedAddress }) => {
-  const tokenPriceDataFeed = await TokenPriceDataFeed(window.aragonClient, dataFeedAddress)
-  const currentResult = await tokenPriceDataFeed.currentPrice()
-  const lastUpdated = await tokenPriceDataFeed.lastUpdated()
+  const iDataFeed = await IDataFeed(window.aragonClient, dataFeedAddress)
+  const lastUpdatedResult = await iDataFeed.currentPrice()
+  const lastUpdated = await iDataFeed.lastUpdated()
+  const currentResult = await iDataFeed.viewCurrentResult()
 
   return {
-    currentResult,
-    lastUpdated
+    lastUpdatedResult,
+    lastUpdated,
+    currentResult
   }
 }
 
@@ -59,6 +61,15 @@ export const logMedianDataFeedResult = async (dataFeeds) => {
     'client',
     'setResult',
     dataFeeds
+  )
+}
+
+export const updateAllDataFeeds = async ({ dataFeedAddrs }) => {
+  return contractFn(
+    window.aragonClient,
+    'client',
+    'updateAll',
+    dataFeedAddrs
   )
 }
 
@@ -100,5 +111,6 @@ export default {
   getDataFeedLatestResult,
   getMedianDataFeedInfo,
   logDataFeedResult,
-  logMedianDataFeedResult
+  logMedianDataFeedResult,
+  updateAllDataFeeds
 }

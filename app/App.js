@@ -4,6 +4,7 @@ import SidePanelDisplayContainer from './containers/SidePanelDisplayContainer'
 import ShowPanelButtonContainer from './containers/ShowPanelButtonContainer'
 import DataFeedListContainer from './containers/DataFeedListContainer'
 import MedianDataFeedContainer from './containers/MedianDataFeedContainer'
+import UpdateAllButton from './containers/UpdateAllContainer'
 
 const ShowAddDataFeedPanel = () => (
   <ShowPanelButtonContainer panelName="addDataFeed">
@@ -16,6 +17,7 @@ export default class App extends React.Component {
     return (
       <Main>
         <AppBar title="Data Feeds" endContent={<ShowAddDataFeedPanel />} />
+        <UpdateAllButton />
         <MedianDataFeedContainer />
         <DataFeedListContainer />
         <SidePanelDisplayContainer />

@@ -5,7 +5,7 @@ const ACL = artifacts.require('ACL')
 const Kernel = artifacts.require('Kernel')
 
 // Tidbit contracts
-const DataFeedOracleBase = artifacts.require('DataFeedOracleBase.sol')
+const TokenPriceDataFeedMock = artifacts.require('TokenPriceDataFeedMock.sol')
 const MedianDataFeedOracle = artifacts.require('MedianDataFeedOracle.sol')
 
 // Local Contracts
@@ -40,17 +40,16 @@ contract('OracleManager', (accounts) => {
     const receipt = await dao.newAppInstance('0x1234', oracleManagerBase.address, '0x', false, { from: root })
 
     // deploy data feed oracles
-    dataFeed1 = await DataFeedOracleBase.new()
-    dataFeed2 = await DataFeedOracleBase.new()
+    dataFeed1 = await TokenPriceDataFeedMock.new()
+    dataFeed2 = await TokenPriceDataFeedMock.new()
+    initializeDataFeed(dataFeed1, accounts)
+    initializeDataFeed(dataFeed2, accounts)
     medianDataFeed = await MedianDataFeedOracle.new()
 
     // initialize oracleManager
     oracleManager = await OracleManager.at(receipt.logs.filter(l => l.event == 'NewAppProxy')[0].args.proxy)
     const MANAGE_DATA_FEEDS = await oracleManager.MANAGE_DATA_FEEDS()
     await acl.createPermission(root, oracleManager.address, MANAGE_DATA_FEEDS, root);
-
-    await dataFeed1.initialize(root)
-    await dataFeed2.initialize(root)
   })
 
   describe('initialize()', () => {
@@ -96,18 +95,18 @@ contract('OracleManager', (accounts) => {
     let unapprovedDataFeed
 
     beforeEach(async () => {
-      unapprovedDataFeed = await DataFeedOracleBase.new()
-      await unapprovedDataFeed.initialize(root)
+      unapprovedDataFeed = await TokenPriceDataFeedMock.new()
 
       await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
-      await dataFeed1.setResult(uintToBytes32(5), unixTime() - 1)
-      await dataFeed2.setResult(uintToBytes32(7), unixTime() - 1)
-      await unapprovedDataFeed.setResult(uintToBytes32(9), unixTime() - 1)
+      await setDataFeedResult(dataFeed1, 5)
+      await setDataFeedResult(dataFeed2, 7)
+      await initializeDataFeed(unapprovedDataFeed, accounts)
+      await setDataFeedResult(unapprovedDataFeed, 9)
     })
 
     it('sets the result to the median of the dataFeeds', async () => {
       await oracleManager.setResult([dataFeed1.address, dataFeed2.address])
-      expect(bytes32ToNum((await oracleManager.resultByIndex(1))[0])).to.equal(6)
+      expect(bytes32ToNum((await oracleManager.resultByIndex(1))[0])).to.equal(6 * 10 ** 18)
     })
 
     it('reverts if a dataFeed is not approved', async () => {
@@ -133,8 +132,7 @@ contract('OracleManager', (accounts) => {
     let newlyApprovedDataFeed
 
     beforeEach(async () => {
-      newlyApprovedDataFeed = await DataFeedOracleBase.new()
-      await newlyApprovedDataFeed.initialize(root)
+      newlyApprovedDataFeed = await TokenPriceDataFeedMock.new()
 
       await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
     })
@@ -168,8 +166,8 @@ contract('OracleManager', (accounts) => {
     let unapprovedDataFeed
 
     beforeEach(async () => {
-      unapprovedDataFeed = await DataFeedOracleBase.new()
-      await unapprovedDataFeed.initialize(root)
+      unapprovedDataFeed = await TokenPriceDataFeedMock.new()
+      await initializeDataFeed(unapprovedDataFeed, accounts)
 
       await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
     })
@@ -199,6 +197,31 @@ contract('OracleManager', (accounts) => {
     })
   })
 
+  describe('updateAll()', () => {
+    beforeEach(async () => {
+      await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
+      await setDataFeedResult(dataFeed1, 5)
+      await setDataFeedResult(dataFeed2, 7)
+      await oracleManager.setResult([dataFeed1.address, dataFeed2.address])
+      await dataFeed1.mock_setResult(5)
+      await dataFeed2.mock_setResult(10)
+    })
+
+    it('updates approved data feeds', async () => {
+      await increaseTime(1000)
+      await oracleManager.updateAll([dataFeed1.address, dataFeed2.address])
+      expect(await dataFeed1.latestResult()).to.equal(uintToBytes32(5 * 10 ** 18))
+      expect(await dataFeed2.latestResult()).to.equal(uintToBytes32(10 * 10 ** 18))
+    })
+
+    it('updates medianDataFeed', async () => {
+      expect(await oracleManager.latestResult()).to.equal(uintToBytes32(6 * 10 ** 18))
+      await increaseTime(1000)
+      await oracleManager.updateAll([dataFeed1.address, dataFeed2.address])
+      expect(await oracleManager.latestResult()).to.equal(uintToBytes32(7.5 * 10 ** 18))
+    })
+  })
+
   describe('contractAddress()', () => {
     beforeEach(async () => {
       await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
@@ -214,25 +237,40 @@ contract('OracleManager', (accounts) => {
       const timehop = 1000
       await oracleManager.initialize([dataFeed1.address, dataFeed2.address], 0)
 
-      await dataFeed1.setResult(uintToBytes32(5), (await latestTimestamp()) - 1)
-      await dataFeed2.setResult(uintToBytes32(7), (await latestTimestamp()) - 1)
+      await setDataFeedResult(dataFeed1, 5)
+      await setDataFeedResult(dataFeed2, 7)
       await oracleManager.setResult([dataFeed1.address, dataFeed2.address])
 
       await increaseTime(timehop)
 
-      await dataFeed1.setResult(uintToBytes32(7), (await latestTimestamp()) - 1)
-      await dataFeed2.setResult(uintToBytes32(9), (await latestTimestamp()) - 1)
+      await setDataFeedResult(dataFeed1, 7)
+      await setDataFeedResult(dataFeed2, 9)
       await oracleManager.setResult([dataFeed1.address, dataFeed2.address])
 
       await increaseTime(timehop)
 
-      await dataFeed1.setResult(uintToBytes32(9), (await latestTimestamp()) - 1)
-      await dataFeed2.setResult(uintToBytes32(11), (await latestTimestamp()) - 1)
+      await setDataFeedResult(dataFeed1, 9)
+      await setDataFeedResult(dataFeed2, 11)
       await oracleManager.setResult([dataFeed1.address, dataFeed2.address])
     })
 
     it('has correct TimeMedianDataFeed functionality', async () => {
-      expect(await oracleManager.medianizeByIndices(1, 2)).to.equal(uintToBytes32(8))
+      expect(await oracleManager.medianizeByIndices(1, 2)).to.equal(uintToBytes32(8 * 10 ** 18))
     })
   })
 })
+
+async function setDataFeedResult(dataFeed, result) {
+  await dataFeed.mock_setResult(result)
+  await dataFeed.logResult()
+}
+
+async function initializeDataFeed(dataFeed, accounts) {
+  // Mocking dataFeeds for ease of testing. These addresses are arbitrary values
+  // in mocked contract
+  let mockAddr1 = accounts[1]
+  let mockAddr2 = accounts[2]
+  let mockAddr3 = accounts[3]
+
+  await dataFeed.initialize(mockAddr1, mockAddr2, mockAddr3)
+}
