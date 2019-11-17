@@ -60,7 +60,7 @@ contract OracleManager is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
   *      recognize functions from extended contracts
   * @param _dataFeeds The dataFeeds to be updated
   */
-  function setResult(DataFeedOracleBase[] _dataFeeds) public {
+  function setResult(address[] _dataFeeds) public {
     MedianDataFeedOracle.setResult(_dataFeeds);
   }
 
@@ -92,7 +92,7 @@ contract OracleManager is AragonApp, MedianDataFeedOracle, TimeMedianDataFeed {
   * @dev updates all approved data feeds and median data feed in one transaction.
   * @param _dataFeeds The dataFeeds to be updated
   */
-  function updateAll(DataFeedOracleBase[] _dataFeeds) public {
+  function updateAll(address[] _dataFeeds) public {
     for (uint i=0; i < _dataFeeds.length; i++) {
       updateDataFeedResult(_dataFeeds[i]);
     }
