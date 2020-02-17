@@ -1,4 +1,4 @@
-import 'tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
+import '@levelk/tidbit/contracts/DataFeedOracles/DataFeedOracleBase.sol';
 
 contract TokenPriceDataFeedMock is DataFeedOracleBase {
   address public token1;
