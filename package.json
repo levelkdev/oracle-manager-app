@@ -1,5 +1,5 @@
 {
-  "name": "oracle-manager-app",
+  "name": "@levelk/oracle-manager-app",
   "version": "0.1.0",
   "description": "Aragon app for managing oracle addresses",
   "dependencies": {
@@ -79,5 +79,21 @@
     "truffle:version": "truffle version",
     "aragon:version": "aragon --version"
   },
-  "keywords": []
+  "keywords": [],
+  "main": "truffle.js",
+  "files": [
+    "build",
+    "contracts",
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levelkdev/oracle-manager-app.git"
+  },
+  "author": "@mikec",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/levelkdev/oracle-manager-app/issues"
+  },
+  "homepage": "https://github.com/levelkdev/oracle-manager-app#readme"
 }
