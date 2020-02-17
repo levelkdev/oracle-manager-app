@@ -1,6 +1,6 @@
 {
   "name": "@levelk/oracle-manager-app",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Aragon app for managing oracle addresses",
   "dependencies": {
     "@aragon/api": "2.0.0-beta.8",
